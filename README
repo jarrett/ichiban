@@ -1,0 +1,4 @@
+To use, create a folder for your project. Populate it with the appropriate folders. Create a Rakefile and add this:
+
+require 'ichiban'
+Ichiban::Tasks.new.define
