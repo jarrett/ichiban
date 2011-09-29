@@ -1,0 +1,2 @@
+require 'ichiban'
+Ichiban.define_tasks(__FILE__)

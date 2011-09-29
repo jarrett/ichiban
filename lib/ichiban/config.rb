@@ -1,48 +1,31 @@
 module Ichiban
-	PAGE_FILE_EXTENSIONS = ['.html', '.markdown']
-	
-	def self.configure
-		yield config
-	end
-	
-	def self.compile(project_root)
-		Compiler.new(project_root)
-		yield @compiler
-		@compiler = nil
-	end
-	
-	def self.compiler
-		@compiler or 'Ichiban.compiler not initialized'
-	end
-	
-	def self.compiler=(c)
-		@compiler = c
-	end
-	
 	def self.config
-		@config or 'Ichiban.config not initialized'
+		@config ||= ::Ichiban::Config.new
+		yield @config if block_given?
+		@config
 	end
 	
-	def self.initialize(project_root)
-		@project_root = project_root
-		@config = ::Ichiban::Config.new
-		require File.join(project_root, 'config.rb')
+	def self.configure_for_project(project_root)
+		config.project_root = project_root
+		config_file = File.join(project_root, 'config.rb')
+		raise "#{config_file} must exist" unless File.exists?(config_file)
+		load config_file
 	end
 	
+	# It's a bit messy to have this class method that's just an alias to a method on the config object.
+	# But so many different bits of code (including client code) need to know the project root, it makes
+	# pragmatic sense to have a really compact way to get it.
 	def self.project_root
-		@project_root
+		config.project_root
 	end
 	
 	class Config
-		attr_accessor :ignored_less_files, :ignored_scss_files
+		attr_accessor :project_root
+
 		attr_writer :relative_url_root
 		
-		def initialize
-			@ignored_less_files = []
-		end
-		
 		def relative_url_root
-			@relative_url_root or raise('Relative URL root not set')
+			@relative_url_root || raise('Ichiban.config.relative_url_root not set. Set inside block in config.rb like this: cfg.relative_url_root = \'/\'')
 		end
 	end
 end
