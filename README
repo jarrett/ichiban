@@ -46,7 +46,7 @@ child and refork upon changes to models, scripts, and helpers. The child's job i
 Scripts should have an optional dependencies block:
 
 dependencies('data/employees.csv', 'data/stores.csv') do
-	# Generate calls go here
+  # Generate calls go here
 end
 
 This will cause the block to run only when employees.csv or stores.csv has changed. Since there's no way to infer the output file paths,

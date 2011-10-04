@@ -1,6 +1,6 @@
 <h1>Employees</h1>
 <ul>
-	<% Employee.all.each do |employee| %>
-		<li><%= link_to employee.first + ' ' + employee.last, employee_path(employee) %></li>
-	<% end %>
+  <% Employee.all.each do |employee| %>
+    <li><%= link_to employee.first + ' ' + employee.last, employee_path(employee) %></li>
+  <% end %>
 </ul>

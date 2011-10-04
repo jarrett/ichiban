@@ -1,7 +1,7 @@
 
-		class Foo
-			def bar
-				puts 'bar'
-			end
-		end
-	
+    class Foo
+      def bar
+        puts 'bar'
+      end
+    end
+  

@@ -4,6 +4,16 @@ $:.unshift File.expand_path(File.join(File.dirname(__FILE__)), '../lib')
 
 require 'ichiban'
 
+module Ichiban
+  class Logger
+    def out(msg)
+      (@test_messages ||= []) << msg
+    end
+    
+    attr_reader :test_messages
+  end
+end
+
 RSpec::Matchers.define :be_file do
-	match { |path| File.exists?(path) }
+  match { |path| File.exists?(path) }
 end
