@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
 
   s.rubyforge_project = "ichiban"
   
-  s.add_dependency 'active_support'
+  s.add_dependency 'activesupport'
   s.add_dependency 'erubis'
   s.add_dependency 'maruku'
 
