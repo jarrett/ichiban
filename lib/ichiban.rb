@@ -1,4 +1,3 @@
-require 'csv'
 require 'fileutils'
 require 'active_support/core_ext/class/attribute'
 require 'active_support/core_ext/object/blank'
@@ -6,20 +5,22 @@ require 'active_support/inflector'
 require 'erubis'
 require 'maruku'
 require 'sass'
+require 'listen'
 
 # Order matters!
 require 'ichiban/command'
-require 'ichiban/layouts'
-require 'ichiban/helpers'
-require 'ichiban/compilation'
-require 'ichiban/config'
-require 'ichiban/erb_page'
-require 'ichiban/files'
-require 'ichiban/logger'
-require 'ichiban/loading'
-require 'ichiban/mapping'
-require 'ichiban/path'
-require 'ichiban/script_runner'
-require 'ichiban/tasks'
-require 'ichiban/version'
 require 'ichiban/watcher'
+
+module Ichiban
+  def self.compiler
+    
+  end
+  
+  def self.project_root=(path)
+    @project_root = path
+  end
+  
+  def self.project_root
+    @project_root
+  end
+end
