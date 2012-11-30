@@ -1,26 +1,44 @@
+# Standard lib
 require 'fileutils'
+require 'json'
+
+# Gems
 require 'active_support/core_ext/class/attribute'
 require 'active_support/core_ext/object/blank'
 require 'active_support/inflector'
-require 'erubis'
-require 'maruku'
 require 'sass'
 require 'listen'
+require 'erubis'
 
-# Order matters!
+# Ichiban files. Order matters!
+require 'ichiban/logger'
 require 'ichiban/command'
 require 'ichiban/watcher'
+require 'ichiban/file'
+require 'ichiban/helpers'
+require 'ichiban/html_compiler'
+require 'ichiban/markdown'
+require 'ichiban/dependencies'
+require 'ichiban/helpers'
 
 module Ichiban
-  def self.compiler
-    
-  end
-  
   def self.project_root=(path)
     @project_root = path
   end
   
   def self.project_root
     @project_root
+  end
+  
+  # Try to load the libraries
+  def self.try_require(*gems)
+    gems.each do |gem|
+      begin
+        require gem
+        return gem
+      rescue LoadError
+      end
+    end
+    false
   end
 end

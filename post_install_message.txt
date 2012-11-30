@@ -1,0 +1,11 @@
+Ichiban was installed successfully.
+Type `ichiban` for usage hints.
+
+If you intend to use Markdown in your projects,
+be sure to install one of these Markdown gems:
+redcarpet
+maruku
+rdiscount
+
+For more information:
+https://github.com/jarrett/ichiban

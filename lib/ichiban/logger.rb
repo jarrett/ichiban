@@ -5,7 +5,9 @@ module Ichiban
   
   class Logger
     def compilation(src, dst)
-      out "#{src} => #{dst}"
+      src = src.slice(Ichiban.project_root.length + 1..-1)
+      dst = dst.slice(Ichiban.project_root.length + 1..-1)
+      out "#{src} -> #{dst}"
     end
     
     def exception(exc)

@@ -7,7 +7,14 @@ module Ichiban
       )
       .latency(0.5)
       .change do |modified, added, removed|
-        
+        (modified + added).each do |path|
+          if file = Ichiban::File.from_abs(path)
+            file.compile
+          end
+        end
+        removed.each do |path|
+          
+        end
       end.start
     end
   end
