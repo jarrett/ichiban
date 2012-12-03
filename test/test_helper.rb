@@ -1,5 +1,7 @@
 require 'minitest/unit'
-require 'minitest/autorun'
+require 'turn/autorun'
+#require 'minitest/autorun'
+#require 'turn'
 
 $:.unshift(File.join(File.expand_path(File.dirname(__FILE__)), '../lib'))
 

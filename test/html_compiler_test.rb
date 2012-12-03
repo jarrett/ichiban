@@ -26,4 +26,10 @@ class TestHtmlCompiler < MiniTest::Unit::TestCase
     Ichiban::HTMLCompiler.new(file).compile
     assert_compiled 'markdown_page.html'
   end
+  
+  def test_nested_layouts
+    file = Ichiban::HTMLFile.new('html/nested_layouts.html')
+    Ichiban::HTMLCompiler.new(file).compile
+    assert_compiled 'nested_layouts.html'
+  end
 end

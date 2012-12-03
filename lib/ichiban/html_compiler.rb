@@ -8,12 +8,17 @@ module Ichiban
     end
     
     def compile_to_str
-      inner_rhtml = ::File.read(@html_file.abs)
-      if (@html_file.abs.end_with?('.markdown') or @html_file.abs.end_with?('.md'))
-        inner_rhtml = Ichiban::Markdown.compile(inner_rhtml) # Will look for installed Markdown gems
-      end
+      # Compile the HTML of the content page, but not the layouts (yet)
       ctx = Ichiban::HTMLCompiler::Context.new(:_current_path => @html_file.dest_rel_to_compiled)
-      wrap_in_layouts(ctx, inner_rhtml)
+      inner_html = Eruby.new(::File.read(@html_file.abs)).evaluate(ctx)
+      
+      # Compile Markdown if necessary
+      if (@html_file.abs.end_with?('.markdown') or @html_file.abs.end_with?('.md'))
+        inner_html = Ichiban::Markdown.compile(inner_html) # Will look for installed Markdown gems
+      end
+      
+      # Layouts
+      wrap_in_layouts(ctx, inner_html)
     end
     
     # Takes an instance of Ichiban::HTMLFile
@@ -22,8 +27,12 @@ module Ichiban
     end
     
     def wrap_in_layouts(ctx, inner_rhtml)
+      puts ctx.layout_stack.reverse.inspect
       ctx.layout_stack.reverse.inject(inner_rhtml) do |html, layout_name|
         layout_path = ::File.join(Ichiban.project_root, 'layouts', layout_name + '.html')
+        unless ::File.exists?(layout_path)
+          raise "Layout does not exist: #{layout_path}"
+        end
         eruby = Eruby.new(
           ::File.read(layout_path),
           :filename => layout_path

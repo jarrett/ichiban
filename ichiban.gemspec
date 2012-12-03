@@ -14,5 +14,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'listen'
   s.add_runtime_dependency 'activesupport'
   
+  s.add_development_dependency 'turn'
+  
   s.post_install_message = File.read(File.join(File.dirname(__FILE__), 'post_install_message.txt'))
 end
