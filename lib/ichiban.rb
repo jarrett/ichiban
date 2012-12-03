@@ -22,6 +22,22 @@ require 'ichiban/dependencies'
 require 'ichiban/helpers'
 
 module Ichiban
+  # Does the current project (as determined by project_root) have a .git directory?
+  def self.gitted?
+    ::File.directory?(::File.join(project_root, '.git'))
+  end
+  
+  def self.grit
+    unless @grit
+      begin
+        require 'grit'
+        @grit = Grit::Repo.new(project_root)
+      rescue LoadError
+      end
+    end
+    @grit
+  end
+  
   def self.project_root=(path)
     @project_root = path
   end

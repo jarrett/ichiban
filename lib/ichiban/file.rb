@@ -39,6 +39,10 @@ module Ichiban
       end
     end
     
+    def has_dest?
+      respond_to?(:dest_rel_to_compiled)
+    end
+    
     def initialize(rel)
       @rel = rel
       @abs = ::File.join(Ichiban.project_root, rel)
