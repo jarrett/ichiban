@@ -46,8 +46,16 @@ module Ichiban
       out msg
     end
     
+    def initialize
+      @out = STDOUT
+    end
+    
+    def out=(io)
+      @out = io
+    end
+    
     def out(msg)
-      puts msg
+      @out.puts msg
     end
     
     def warn(msg)

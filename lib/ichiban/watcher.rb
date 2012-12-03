@@ -11,7 +11,7 @@ module Ichiban
       end
       
       if Ichiban.gitted?
-        # If Grit is isntalled, Ichiban.grit returns an instance of Grit::Repo. Else, it returns nil.
+        # If Grit is not installed, Ichiban.grit returns an instance of Grit::Repo. Else, it returns nil.
         if repo = Ichiban.grit
           # Grit::Repo#remove doesn't complain if you try to git rm a nonexistent file, or one that
           # has already been git rm'ed. So we can safely do these two operations without performing
@@ -53,14 +53,13 @@ module Ichiban
       .latency(@options[:latency])
       .change do |modified, added, deleted|
         begin
-          #puts ANSI.color("Change!", :magenta)
           (modified + added).each do |path|
             if file = Ichiban::File.from_abs(path)
               file.update
             end
           end
           deleted.each do |path|
-            #delete_file(path)
+            delete_file(path)
           end
         rescue => exc
           Ichiban.logger.exception(exc)
@@ -69,7 +68,6 @@ module Ichiban
     end
     
     def stop
-      puts 'stopping listening'
       if @listener
         @listener.stop
         @listener = nil
