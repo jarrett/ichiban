@@ -61,7 +61,7 @@ module Ichiban
     end
     
     def update
-      Ichiban::HTMLCompiler.new.compile(self)
+      Ichiban::HTMLCompiler.new(self).compile
     end
   end
   

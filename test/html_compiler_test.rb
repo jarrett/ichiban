@@ -10,7 +10,7 @@ class TestHtmlCompiler < MiniTest::Unit::TestCase
   
   def teardown
     Dir.glob(File.join(Ichiban.project_root, 'compiled', '**/*')).each do |path|
-      #FileUtils.rm path
+      FileUtils.rm path
     end
     Ichiban.project_root = nil
   end

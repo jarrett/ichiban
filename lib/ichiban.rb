@@ -9,6 +9,7 @@ require 'active_support/inflector'
 require 'sass'
 require 'listen'
 require 'erubis'
+require 'rake'
 
 # Ichiban files. Order matters!
 require 'ichiban/logger'

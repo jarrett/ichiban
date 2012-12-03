@@ -27,7 +27,6 @@ module Ichiban
     end
     
     def wrap_in_layouts(ctx, inner_rhtml)
-      puts ctx.layout_stack.reverse.inspect
       ctx.layout_stack.reverse.inject(inner_rhtml) do |html, layout_name|
         layout_path = ::File.join(Ichiban.project_root, 'layouts', layout_name + '.html')
         unless ::File.exists?(layout_path)

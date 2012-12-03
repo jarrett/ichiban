@@ -28,7 +28,7 @@ module Ichiban
         dst = dst.slice(Ichiban.project_root.length + 1..-1)
       end
       if dst
-        msg = "Deleted: #{src} => #{dst}"
+        msg = "Deleted: #{src} -> #{dst}"
       else
         msg = "Deleted: #{src}"
       end
