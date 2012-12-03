@@ -20,7 +20,12 @@ class TestWatcher < MiniTest::Unit::TestCase
   end
   
   def setup
-    Ichiban.project_root = File.expand_path(File.join(File.dirname(__FILE__), '..', 'example'))
+    # The Listen gem leaks state between tests. To get around this, we copy the example directory
+    # into a temporary location.
+    dir_suffix = rand(10**30)
+    Ichiban.project_root = File.expand_path(File.join(File.dirname(__FILE__), '..', "example-#{dir_suffix}"))
+    FileUtils.cp_r(File.expand_path(File.join(File.dirname(__FILE__), '..', 'example')), Ichiban.project_root)
+
     # The Listen gem runs the watcher in a thread. So any uncaught exceptions there would normally
     # just cause the thread to exit, rather than raise an exception in the main thread. This would
     # make the watcher seemingly inexplicably stop detecting filesystem events. The solution is to
@@ -30,9 +35,7 @@ class TestWatcher < MiniTest::Unit::TestCase
   end
   
   def teardown
-    Dir.glob(File.join(Ichiban.project_root, 'compiled', '**/*')).each do |path|
-      FileUtils.rm path
-    end
+    FileUtils.rm_rf Ichiban.project_root
     Ichiban.project_root = nil
     Thread.abort_on_exception = @previous_abort_on_exceptions_setting
   end
@@ -71,7 +74,24 @@ class TestWatcher < MiniTest::Unit::TestCase
   end
   
   def test_watched_and_deleted
-    skip
+    src = File.join(Ichiban.project_root, 'html', 'watched_and_deleted.html')
+    dst = File.join(Ichiban.project_root, 'compiled', 'watched_and_deleted.html')
+    
+    # Create the source file
+    File.open(src, 'w') do |f|
+      f << '<p>This file should be deleted momentarily.</p>'
+    end
+    
+    # Create the destination file, as if it had been previously compiled
+    FileUtils.cp(File.join(Ichiban.project_root, 'expected', 'watched_and_deleted.html'), dst)
+    
+    # Delete the source. The destination should be deleted as well.
+    
+    run_watcher do
+      FileUtils.rm src
+      assert !File.exists?(src), "Couldn't delete src for some reason"
+    end
+    assert !File.exists?(dst), "Expected #{dst} to be deleted as a result of #{src} being deleted"
   end
   
   def test_exception_logging

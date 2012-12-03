@@ -1,7 +1,7 @@
 module Ichiban
   class Watcher    
     def delete_file(path)
-      file = Ichiban::File.from_path(abs)
+      file = Ichiban::File.from_abs(path)
       # file will be nil if the path doesn't map to a known subclass of Ichiban::File. Furthermore,
       # even if file is not nil, it may be a kind of Ichiban::File that does not have a destination.
       if file and file.has_dest?
@@ -27,10 +27,12 @@ module Ichiban
             "or else manually `git rm` the files yourself. (Don't forget the compiled files.)\n" +
             "The deleted file was:\n" + path
           )
-          # Project under git but Grit not installed, so just do a regular filesystem rm for the destination
-          FileUtils.rm(dest)
+          if dest and ::File.exists?(dest)
+            # Project under git but Grit not installed, so just do a regular filesystem rm for the destination
+            FileUtils.rm(dest)
+          end
         end
-      else
+      elsif dest and ::File.exists?(dest)
         # Project not under git, so just do a regular filesystem rm for the destination
         FileUtils.rm(dest)
       end
@@ -50,6 +52,7 @@ module Ichiban
         ::File.join(Ichiban.project_root, 'html')#,
         #::File.join(Ichiban.project_root, 'assets')
       )
+      .ignore(/.listen_test$/)
       .latency(@options[:latency])
       .change do |modified, added, deleted|
         begin
@@ -57,12 +60,12 @@ module Ichiban
             if file = Ichiban::File.from_abs(path)
               file.update
             end
-          end
-          deleted.each do |path|
-            delete_file(path)
-          end
+          end          
         rescue => exc
           Ichiban.logger.exception(exc)
+        end
+        deleted.each do |path|
+          delete_file(path)
         end
       end.start(false) # nonblocking
     end
