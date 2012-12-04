@@ -1,6 +1,7 @@
 # Standard lib
 require 'fileutils'
 require 'json'
+require 'erb' # Just for the helpers
 
 # Gems
 require 'active_support/core_ext/class/attribute'
@@ -12,6 +13,7 @@ require 'erubis'
 require 'rake'
 
 # Ichiban files. Order matters!
+require 'ichiban/config'
 require 'ichiban/logger'
 require 'ichiban/command'
 require 'ichiban/watcher'
@@ -24,24 +26,12 @@ require 'ichiban/dependencies'
 require 'ichiban/helpers'
 
 module Ichiban
-  # Does the current project (as determined by project_root) have a .git directory?
-  def self.gitted?
-    ::File.directory?(::File.join(project_root, '.git'))
-  end
-  
-  def self.grit
-    unless @grit
-      begin
-        require 'grit'
-        @grit = Grit::Repo.new(project_root)
-      rescue LoadError
-      end
-    end
-    @grit
-  end
-  
+  # In addition to setting the variable, this loads the config file
   def self.project_root=(path)
     @project_root = path
+    if path # It's valid to set project_root to nil, though this would likely only happen in tests
+      Ichiban::Config.load_file
+    end
   end
   
   def self.project_root

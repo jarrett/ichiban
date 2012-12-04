@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   
   s.add_development_dependency 'mocha'
   s.add_development_dependency 'turn'
-  s.add_development_dependency 'grit'
+  s.add_development_dependency 'lorax'
   
   s.post_install_message = File.read(File.join(File.dirname(__FILE__), 'post_install_message.txt'))
 end

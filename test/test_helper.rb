@@ -1,6 +1,7 @@
 require 'minitest/unit'
 require 'turn/autorun'
 require 'mocha/setup'
+require 'lorax'
 
 $:.unshift(File.join(File.expand_path(File.dirname(__FILE__)), '../lib'))
 
@@ -9,8 +10,9 @@ require 'ichiban'
 module ExampleDirectory
   def copy_example_dir
     dir_suffix = rand(10**30)
-    Ichiban.project_root = File.expand_path(File.join(File.dirname(__FILE__), '..', "example-#{dir_suffix}"))
-    FileUtils.cp_r(File.expand_path(File.join(File.dirname(__FILE__), '..', 'example')), Ichiban.project_root)
+    new_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', "example-#{dir_suffix}"))
+    FileUtils.cp_r(File.expand_path(File.join(File.dirname(__FILE__), '..', 'example')), new_dir)
+    Ichiban.project_root = new_dir
   end
   
   # Add and commit everything
@@ -50,5 +52,21 @@ module LoggingAssertions
     yield
     out.rewind
     assert out.read.include?(str), msg || "Expected log to include #{str}"
+  end
+end
+
+module HTMLAssertions
+  # Takes two strings. Checks if they represent identical DOMs.
+  def html_eql?(html1, html2)
+    doc1 = Nokogiri.HTML(html1)
+    doc2 = Nokogiri.HTML(html2)
+    Lorax::Signature.new(doc1.root).signature == Lorax::Signature.new(doc2.root).signature
+  end
+  
+  def assert_html(expected_html, actual_html, message = nil)
+    assert(
+      html_eql?(expected_html, actual_html),
+      message || "HTML output not correct. Expected:\n\n#{expected_html}\n\nGot:\n\n#{actual_html}"
+    )
   end
 end

@@ -17,9 +17,9 @@ class TestWatcher < MiniTest::Unit::TestCase
     begin
       # These sleep statements deal with the race condition. There doesn't seem to be any other
       # solution for that.
-      sleep 0.5
+      sleep 0.75
       yield
-      sleep 0.5
+      sleep 0.75
     ensure
       watcher.stop
     end
@@ -79,15 +79,13 @@ class TestWatcher < MiniTest::Unit::TestCase
   
   def test_watched_and_deleted
     src = File.join(Ichiban.project_root, 'html', 'watched_and_deleted.html')
-    dst = File.join(Ichiban.project_root, 'compiled', 'watched_and_deleted.html')
     
     # Create the source file
     File.open(src, 'w') do |f|
       f << '<p>This file should be deleted momentarily.</p>'
     end
     
-    # Create the destination file, as if it had been previously compiled
-    FileUtils.cp(File.join(Ichiban.project_root, 'expected', 'watched_and_deleted.html'), dst)
+    # No need to create the destination file, since we're just mocking the deleter
     
     Ichiban::Deleter.expects(:new).returns(deleter = mock('Deleter'))
     deleter.expects(:delete).with(src)

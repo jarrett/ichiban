@@ -13,10 +13,6 @@ module Ichiban
       @_erb_out << str
     end
     
-    def content_for(ivar_name, &block)
-      instance_variable_set '@' + ivar_name, capture(&block)
-    end
-    
     def content_tag(*args)
       options = args.extract_options!
       name = args.shift
@@ -32,7 +28,7 @@ module Ichiban
     
     def javascript_include_tag(js_file)
       js_file = js_file + '.js' unless js_file.end_with?('.js')
-      path = normalize_path(File.join('/javascripts', js_file))
+      path = normalize_path(::File.join('/javascripts', js_file))
       content_tag 'script', 'type' => 'text/javascript', 'src' => path
     end
     
@@ -90,7 +86,7 @@ module Ichiban
       content_tag('ul', ul_options) do
         items.inject('') do |lis, (text, path, attrs)|
           if options[:section]
-            path = File.join(options[:section], path)
+            path = ::File.join(options[:section], path)
           end
           path = normalize_path(path)
           lis + content_tag('li', (attrs or {})) do
@@ -108,7 +104,7 @@ module Ichiban
     # Otherwise, it will remain relative.
     def normalize_path(path)
       if path.start_with?('/')
-        File.join(relative_url_root, path)
+        ::File.join(relative_url_root, path)
       else
         path
       end
@@ -131,7 +127,7 @@ module Ichiban
     
     def stylesheet_link_tag(css_file, media = 'screen')
       css_file = css_file + '.css' unless css_file.end_with?('.css')
-      href = normalize_path(File.join('/stylesheets', css_file))
+      href = normalize_path(::File.join('/stylesheets', css_file))
       tag 'link', 'href' => href, 'type' => 'text/css', 'rel' => 'stylesheet', 'media' => media
     end
     

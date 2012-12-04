@@ -51,6 +51,7 @@ module Ichiban
     class Context < Erubis::Context
       include Ichiban::Helpers
       include Erubis::XmlHelper
+      include ERB::Util # Give us #h
       
       def layout_stack
         @_layout_stack or ['default']
