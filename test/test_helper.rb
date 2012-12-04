@@ -1,11 +1,37 @@
 require 'minitest/unit'
 require 'turn/autorun'
-#require 'minitest/autorun'
-#require 'turn'
+require 'mocha/setup'
 
 $:.unshift(File.join(File.expand_path(File.dirname(__FILE__)), '../lib'))
 
 require 'ichiban'
+
+module ExampleDirectory
+  def copy_example_dir
+    dir_suffix = rand(10**30)
+    Ichiban.project_root = File.expand_path(File.join(File.dirname(__FILE__), '..', "example-#{dir_suffix}"))
+    FileUtils.cp_r(File.expand_path(File.join(File.dirname(__FILE__), '..', 'example')), Ichiban.project_root)
+  end
+  
+  # Add and commit everything
+  def git_commit_all
+    repo = Grit::Repo.new(Ichiban.project_root)
+    repo.add(
+      repo.status.collect { |f| f.path }
+    )
+    repo.commit_all('Commit all')
+  end
+  
+  # Returns a Grit::Repo
+  def git_init(options = {})
+    options = {:commit_all => true}.merge(options)
+    repo = Grit::Repo.init Ichiban.project_root
+    if options[:commit_all]
+      
+    end
+    repo
+  end
+end
 
 module CompilationAssertions
   def assert_compiled(rel_path, msg = nil)

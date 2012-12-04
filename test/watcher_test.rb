@@ -1,8 +1,14 @@
 require File.join(File.expand_path(File.dirname(__FILE__)), 'test_helper.rb')
 
+# Some of these tests use mocking to test the watcher in isolation. Others are more like integration
+# tests, allowing the watcher to call the other classes that actually update the project files. The
+# reason for this difference is that I started using mocks later in the project, and there didn't seem
+# to be any compelling reason to waste time changing the old tests.
+
 class TestWatcher < MiniTest::Unit::TestCase
   include CompilationAssertions
   include LoggingAssertions
+  include ExampleDirectory
   
    # Takes a block. The watcher will be stopped after the block is executed.
   def run_watcher
@@ -22,9 +28,7 @@ class TestWatcher < MiniTest::Unit::TestCase
   def setup
     # The Listen gem leaks state between tests. To get around this, we copy the example directory
     # into a temporary location.
-    dir_suffix = rand(10**30)
-    Ichiban.project_root = File.expand_path(File.join(File.dirname(__FILE__), '..', "example-#{dir_suffix}"))
-    FileUtils.cp_r(File.expand_path(File.join(File.dirname(__FILE__), '..', 'example')), Ichiban.project_root)
+    copy_example_dir
 
     # The Listen gem runs the watcher in a thread. So any uncaught exceptions there would normally
     # just cause the thread to exit, rather than raise an exception in the main thread. This would
@@ -85,13 +89,12 @@ class TestWatcher < MiniTest::Unit::TestCase
     # Create the destination file, as if it had been previously compiled
     FileUtils.cp(File.join(Ichiban.project_root, 'expected', 'watched_and_deleted.html'), dst)
     
-    # Delete the source. The destination should be deleted as well.
+    Ichiban::Deleter.expects(:new).returns(deleter = mock('Deleter'))
+    deleter.expects(:delete).with(src)
     
     run_watcher do
       FileUtils.rm src
-      assert !File.exists?(src), "Couldn't delete src for some reason"
     end
-    assert !File.exists?(dst), "Expected #{dst} to be deleted as a result of #{src} being deleted"
   end
   
   def test_exception_logging

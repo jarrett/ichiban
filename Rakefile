@@ -1,8 +1,8 @@
 require 'rake/testtask'
 
+# To run one test: rake test TEST=just_one_file.rb
 Rake::TestTask.new do |t|
   t.test_files = FileList['test/*_test.rb']
-  #t.verbose = true
 end
 
 def built_gem_name

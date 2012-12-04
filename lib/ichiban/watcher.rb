@@ -1,46 +1,5 @@
 module Ichiban
-  class Watcher    
-    def delete_file(path)
-      file = Ichiban::File.from_abs(path)
-      # file will be nil if the path doesn't map to a known subclass of Ichiban::File. Furthermore,
-      # even if file is not nil, it may be a kind of Ichiban::File that does not have a destination.
-      if file and file.has_dest?
-        dest = file.dest
-      else
-        dest = nil
-      end
-      
-      if Ichiban.gitted?
-        # If Grit is not installed, Ichiban.grit returns an instance of Grit::Repo. Else, it returns nil.
-        if repo = Ichiban.grit
-          # Grit::Repo#remove doesn't complain if you try to git rm a nonexistent file, or one that
-          # has already been git rm'ed. So we can safely do these two operations without performing
-          # any checks first.
-          repo.remove(path)
-          if dest
-            repo.remove(dest)
-          end
-        else
-          Ichiban.logger.warn(
-            "You deleted a file in a project managed by git, but Grit is not installed\n" +
-            "Thus, Ichiban cannot `git rm` the files for you. Please `gem install grit`\n" +
-            "or else manually `git rm` the files yourself. (Don't forget the compiled files.)\n" +
-            "The deleted file was:\n" + path
-          )
-          if dest and ::File.exists?(dest)
-            # Project under git but Grit not installed, so just do a regular filesystem rm for the destination
-            FileUtils.rm(dest)
-          end
-        end
-      elsif dest and ::File.exists?(dest)
-        # Project not under git, so just do a regular filesystem rm for the destination
-        FileUtils.rm(dest)
-      end
-    
-      # Log the deletion(s)
-      Ichiban.logger.deletion(path, dest)
-    end
-    
+  class Watcher        
     def initialize(options = {})
       @options = {
         :latency => 0.5
@@ -65,7 +24,7 @@ module Ichiban
           Ichiban.logger.exception(exc)
         end
         deleted.each do |path|
-          delete_file(path)
+          Ichiban::Deleter.new.delete(path)
         end
       end.start(false) # nonblocking
     end
