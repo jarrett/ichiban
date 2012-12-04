@@ -11,7 +11,7 @@ end
 
 task :build do
   `rm *.gem`
-  puts `gem build rbbcode.gemspec`
+  puts `gem build ichiban.gemspec`
 end
 
 task :install do
