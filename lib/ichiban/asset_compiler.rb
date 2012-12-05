@@ -7,20 +7,11 @@ module Ichiban
     def compile
       case @file
       when Ichiban::SCSSFile
-        compile_scss
+        Sass.compile_file @file.abs, @file.dest
       else
-        copy_asset
+        FileUtils.cp @file.abs, @file.dest
       end
-    end
-    
-    private
-    
-    def compile_scss
-      Sass.compile_file @file.abs, @file.dest
-    end
-    
-    def copy_asset
-      
+      Ichiban.logger.compilation(@file.abs, @file.dest)
     end
   end
 end

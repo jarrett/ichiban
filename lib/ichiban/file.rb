@@ -70,7 +70,7 @@ module Ichiban
   
   class JSFile < File
     def dest_rel_to_compiled
-      File.join('js', @rel.slice('assets/js/'.length..-1))
+      ::File.join('js', @rel.slice('assets/js/'.length..-1))
     end
     
     def update
