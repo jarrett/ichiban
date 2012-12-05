@@ -68,7 +68,7 @@ class TestNavHelper < MiniTest::Unit::TestCase
     )
   end
   
-  def test_sub_menus
+  def test_sub_menu_open_when_on_inner_page
     html = in_context('/two/three') do
       nav([
         ['One', '/one'],
@@ -93,6 +93,39 @@ class TestNavHelper < MiniTest::Unit::TestCase
             <li><a href="/two/one/">Two.One</a></li>
             <li id="two_two"><a href="/two/two/">Two.Two</a></li>
             <li><span class="selected">Two.Three</span></li>
+          </ul>
+        </li>
+        <li id="three"><a href="/three/">Three</a></li>
+      </ul>',
+      html
+    )
+  end
+  
+  def test_sub_menu_open_when_on_outermost_page
+    html = in_context('/two') do
+      nav([
+        ['One', '/one'],
+        ['Two', '/two', [
+          ['Two.One', '/two/one'],
+          ['Two.Two', '/two/two', :id => 'two_two'],
+          ['Two.Three', '/two/three']
+        ]],
+        ['Three', '/three', [
+          ['Three.One', '/three/one'],
+          ['Three.Two', '/three/two'],
+          ['Three.Three', '/three/three']
+        ], {'id' => 'three'}]
+      ])
+    end
+    assert_html('
+      <ul>
+        <li><a href="/one/">One</a></li>
+        <li>
+          <span class="selected">Two</span>
+          <ul>
+            <li><a href="/two/one/">Two.One</a></li>
+            <li id="two_two"><a href="/two/two/">Two.Two</a></li>
+            <li><a href="/two/three/">Two.Three</a></li>
           </ul>
         </li>
         <li id="three"><a href="/three/">Three</a></li>
