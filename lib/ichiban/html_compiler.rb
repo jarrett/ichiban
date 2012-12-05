@@ -50,6 +50,7 @@ module Ichiban
     
     class Context < Erubis::Context
       include Ichiban::Helpers
+      include Ichiban::NavHelper
       include Erubis::XmlHelper
       include ERB::Util # Give us #h
       

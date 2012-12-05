@@ -18,21 +18,31 @@ class TestHelpers < MiniTest::Unit::TestCase
     Ichiban.project_root = nil
   end
   
-  def test_nav_does_not_link_current_page
-    html = in_context('/bar') do
-      nav([
-        ['Foo', '/foo'],
-        ['Bar', '/bar'],
-        ['Baz', '/baz']
-      ])
-    end
-    assert_html('
-      <ul>
-        <li><a href="/foo/">Foo</a></li>
-        <li><span class="selected">Bar</span></li>
-        <li><a href="/baz/">Baz</a></li>
-      </ul>',
-      html
-    )
+  def test_stylesheet_link_tag
+    skip
+  end
+  
+  def test_javascript_include_tag
+    skip
+  end
+  
+  def test_capture
+    skip
+  end
+  
+  def test_link_to
+    skip
+  end
+  
+  def test_normalize_path
+    skip
+  end
+  
+  def test_path_with_slashes
+    skip
+  end
+  
+  def test_relative_url_root
+    skip
   end
 end

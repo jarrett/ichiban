@@ -81,6 +81,7 @@ module Ichiban
     #
     # If you don't specify a section, and your URLs don't have leading slashes,
     # the hrefs will use relative URLs.
+=begin
     def nav(items, options = {})
       ul_options = _limit_options(options, %w(id class)) { |key, value| key.to_s.start_with?('data-') }
       content_tag('ul', ul_options) do
@@ -99,8 +100,9 @@ module Ichiban
         end
       end
     end
+=end
     
-    # If the path has a trailing slash, it will be made absolute using relative_url_root.
+    # If the path has a leading slash, it will be made absolute using relative_url_root.
     # Otherwise, it will remain relative.
     def normalize_path(path)
       if path.start_with?('/')
@@ -108,10 +110,6 @@ module Ichiban
       else
         path
       end
-    end
-    
-    def page_title(title)
-      @page_title = title
     end
     
     # Adds leading and trailing slashes if none are present
