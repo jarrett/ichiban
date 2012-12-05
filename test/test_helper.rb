@@ -40,7 +40,14 @@ module CompilationAssertions
     compiled_path = File.join(Ichiban.project_root, 'compiled', rel_path)
     expected_path = File.join(Ichiban.project_root, 'expected', rel_path)
     assert File.exists?(compiled_path), msg || "Expected #{compiled_path} to exist"
-    assert_equal File.read(compiled_path), File.read(expected_path)
+    compiled_data = File.read(compiled_path)
+    expected_data = File.read(expected_path)
+    # We don't want to print diffs for huge binary files
+    if compiled_data.length < 4000 and expected_data.length > 4000
+      assert_equal expected_data, compiled_data
+    else
+      assert expected_data == compiled_data, "Expected #{compiled_path} to be identical to #{expected_path}"
+    end
   end
 end
 

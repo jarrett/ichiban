@@ -72,32 +72,52 @@ module Ichiban
     def dest_rel_to_compiled
       File.join('js', @rel.slice('assets/js/'.length..-1))
     end
+    
+    def update
+      Ichiban::AssetCompiler.new(self).compile
+    end
   end
   
   class CSSFile < File
     def dest_rel_to_compiled
-      File.join('css', @rel.slice('assets/css/'.length..-1))
+      ::File.join('css', @rel.slice('assets/css/'.length..-1))
+    end
+    
+    def update
+      Ichiban::AssetCompiler.new(self).compile
     end
   end
   
   class SCSSFile < File
     def dest_rel_to_compiled
       replace_ext(
-        File.join('css', @rel.slice('assets/css/'.length..-1)),
+        ::File.join('css', @rel.slice('assets/css/'.length..-1)),
         'css'
       )
+    end
+    
+    def update
+      Ichiban::AssetCompiler.new(self).compile
     end
   end
   
   class ImageFile < File
     def dest_rel_to_compiled
-      File.join('img', @rel.slice('assets/img/'.length..-1))
+      ::File.join('img', @rel.slice('assets/img/'.length..-1))
+    end
+    
+    def update
+      Ichiban::AssetCompiler.new(self).compile
     end
   end
   
   class MiscAssetFile < File
     def dest_rel_to_compiled
       @rel.slice('assets/misc/'.length..-1)
+    end
+    
+    def update
+      Ichiban::AssetCompiler.new(self).compile
     end
   end
   
