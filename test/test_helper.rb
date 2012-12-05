@@ -55,18 +55,14 @@ module LoggingAssertions
   end
 end
 
-module HTMLAssertions
-  # Takes two strings. Checks if they represent identical DOMs.
-  def html_eql?(html1, html2)
-    doc1 = Nokogiri.HTML(html1)
-    doc2 = Nokogiri.HTML(html2)
-    Lorax::Signature.new(doc1.root).signature == Lorax::Signature.new(doc2.root).signature
-  end
-  
+module HTMLAssertions  
   def assert_html(expected_html, actual_html, message = nil)
+    actual_doc = Nokogiri::HTML(actual_html)
+    expected_doc = Nokogiri::HTML(expected_html)
     assert(
-      html_eql?(expected_html, actual_html),
-      message || "HTML output not correct. Expected:\n\n#{expected_html}\n\nGot:\n\n#{actual_html}"
+      Lorax::Signature.new(expected_doc.root).signature ==
+      Lorax::Signature.new(actual_doc.root).signature,
+      message || "HTML output not correct. Expected:\n\n#{expected_doc.to_xhtml}\n\nGot:\n\n#{actual_doc.to_xhtml}"
     )
   end
 end
