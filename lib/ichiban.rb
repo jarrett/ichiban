@@ -4,8 +4,8 @@ require 'json'
 require 'erb' # Just for the helpers
 
 # Gems
-require 'active_support/core_ext/class/attribute'
-require 'active_support/core_ext/object/blank'
+#require 'active_support/core_ext/class/attribute'
+#require 'active_support/core_ext/object/blank'
 require 'active_support/inflector'
 require 'sass'
 require 'listen'
@@ -16,6 +16,7 @@ require 'rake'
 require 'ichiban/config'
 require 'ichiban/logger'
 require 'ichiban/command'
+require 'ichiban/loader'
 require 'ichiban/watcher'
 require 'ichiban/deleter'
 require 'ichiban/file'

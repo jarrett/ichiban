@@ -10,7 +10,17 @@ class TestWatcher < MiniTest::Unit::TestCase
   include LoggingAssertions
   include ExampleDirectory
   
-   # Takes a block. The watcher will be stopped after the block is executed.
+  # A simple way to check if a given bit of functionality is reloaded, taking into account
+  # race conditions. Every 100 milliseconds, run the block. If it matches the expected value,
+  # we're done. Try this max_attempts times. If the block never returns the expected value, flunk.
+  def assert_reloaded(max_attempts)
+    max_attempts.times do
+      return if yield
+    end
+    flunk "Expected the code to be reloaded and the block to return true within #{max_attempts} attempts"
+  end
+  
+  # Takes a block. The watcher will be stopped after the block is executed.
   def run_watcher
     watcher = Ichiban::Watcher.new(:latency => 0.01)
     watcher.start
@@ -100,6 +110,27 @@ class TestWatcher < MiniTest::Unit::TestCase
     assert_logged('Test exception') do
       run_watcher do
         FileUtils.touch src
+      end
+    end
+  end
+  
+  def test_reload_model
+    skip
+    model_path = File.join(Ichiban.project_root, 'models', 'test_model.rb')
+    run_watcher do
+      assert_equal 6, TestModel.new.multiply(3)
+      File.open(model_path, 'w') do |f|
+        f << %(
+          class TestModel
+            def multiply(num)
+              num * 4
+            end
+          end
+        )
+      end
+      i = 0
+      assert_reloaded(20) do
+        TestModel.new.multiply(3) == 12
       end
     end
   end

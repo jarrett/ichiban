@@ -7,6 +7,8 @@ module Ichiban
     end
     
     def start
+      @loader = Ichiban::Loader.new
+      
       @listener = Listen.to(
         ::File.join(Ichiban.project_root, 'html')#,
         #::File.join(Ichiban.project_root, 'assets')
@@ -17,6 +19,7 @@ module Ichiban
         begin
           (modified + added).each do |path|
             if file = Ichiban::File.from_abs(path)
+              @loader.change(file) # Tell the Loader that this file has changed
               file.update
             end
           end          
