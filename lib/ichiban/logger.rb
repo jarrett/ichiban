@@ -50,6 +50,15 @@ module Ichiban
       @out = STDOUT
     end
     
+    def reload(path)
+      path = path.slice(Ichiban.project_root.length + 1..-1)
+      msg = "#{path} triggered a reload"
+      if ansi?
+        msg = ANSI.color(msg, :magenta)
+      end
+      out msg
+    end
+    
     def out=(io)
       @out = io
     end

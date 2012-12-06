@@ -10,22 +10,24 @@ module Ichiban
       @loader = Ichiban::Loader.new
       
       @listener = Listen.to(
-        ::File.join(Ichiban.project_root, 'html')#,
-        #::File.join(Ichiban.project_root, 'assets')
+        ::File.join(Ichiban.project_root, 'html'),
+        ::File.join(Ichiban.project_root, 'assets'),
+        ::File.join(Ichiban.project_root, 'models'),
+        ::File.join(Ichiban.project_root, 'helpers')
       )
       .ignore(/.listen_test$/)
       .latency(@options[:latency])
-      .change do |modified, added, deleted|
-        begin
-          (modified + added).each do |path|
-            if file = Ichiban::File.from_abs(path)
-              @loader.change(file) # Tell the Loader that this file has changed
+      .change do |modified, added, deleted|        
+        (modified + added).each do |path|
+          if file = Ichiban::File.from_abs(path)
+            @loader.change(file) # Tell the Loader that this file has changed
+            begin
               file.update
+            rescue => exc
+              Ichiban.logger.exception(exc)
             end
-          end          
-        rescue => exc
-          Ichiban.logger.exception(exc)
-        end
+          end
+        end                    
         deleted.each do |path|
           Ichiban::Deleter.new.delete(path)
         end

@@ -54,7 +54,21 @@ module Ichiban
       include Erubis::XmlHelper
       include ERB::Util # Give us #h
       
+      # An array of helper modules. Each Context instance will be extended with them on init.
+      # We could just include the modules in this class. But that would break reloading. Once a
+      # module has been included, deleted the module doesn't un-include it. So instead, we limit the
+      # damage to a particular instance of Context.
       @user_defined_helpers = []
+      
+      def self.add_user_defined_helper(mod)
+        unless @user_defined_helpers.include?(mod)
+          @user_defined_helpers << mod
+        end
+      end
+      
+      def self.clear_user_defined_helpers
+        @user_defined_helpers = []
+      end
       
       def initialize(vars)
         super(vars)
@@ -69,14 +83,6 @@ module Ichiban
       
       def self.user_defined_helpers
         @user_defined_helpers
-      end
-      
-      # Pass in an array of helper modules. Each Context instance will be extended with them on init.
-      # We could just include the modules in this class. But that would break reloading. Once a
-      # module has been included, deleted the module doesn't un-include it. So instead, we limit the
-      # damage to a particular instance of Context.
-      def self.user_defined_helpers=(mods)
-        @user_defined_helpers = mods
       end
     end
   end

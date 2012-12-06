@@ -16,6 +16,7 @@ class TestWatcher < MiniTest::Unit::TestCase
   def assert_reloaded(max_attempts)
     max_attempts.times do
       return if yield
+      sleep 0.1
     end
     flunk "Expected the code to be reloaded and the block to return true within #{max_attempts} attempts"
   end
@@ -114,8 +115,11 @@ class TestWatcher < MiniTest::Unit::TestCase
     end
   end
   
-  def test_reload_model
+  def test_watching_assets
     skip
+  end
+  
+  def test_reload_model
     model_path = File.join(Ichiban.project_root, 'models', 'test_model.rb')
     run_watcher do
       assert_equal 6, TestModel.new.multiply(3)

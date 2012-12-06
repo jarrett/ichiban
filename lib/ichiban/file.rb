@@ -122,14 +122,22 @@ module Ichiban
   end
   
   class ModelFile < File
+    def update
+      # No-op. The watcher hands the path to each changed model file to the Loader instance.
+      # So we don't have to worry about that here.
+    end
+  end
+  
+  class HelperFile < File
+    def update
+      # No-op. The watcher hands the path to each changed model file to the Loader instance.
+      # So we don't have to worry about that here.
+    end
   end
   
   class DataFile < File
   end
   
   class ScriptFile < File
-  end
-  
-  class HelperFile < File
   end
 end
