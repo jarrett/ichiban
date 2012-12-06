@@ -16,6 +16,7 @@ require 'rake'
 require 'ichiban/config'
 require 'ichiban/logger'
 require 'ichiban/command'
+require 'ichiban/dependencies'
 require 'ichiban/loader'
 require 'ichiban/watcher'
 require 'ichiban/deleter'
@@ -25,8 +26,7 @@ require 'ichiban/nav_helper'
 require 'ichiban/html_compiler'
 require 'ichiban/asset_compiler'
 require 'ichiban/markdown'
-require 'ichiban/dependencies'
-require 'ichiban/helpers'
+require 'ichiban/scripts'
 
 module Ichiban
   # In addition to setting the variable, this loads the config file

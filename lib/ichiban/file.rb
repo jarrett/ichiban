@@ -1,10 +1,10 @@
 module Ichiban
-  class File
+  class ProjectFile
     attr_reader :abs
     
     # Returns an absolute path in the compiled directory
     def dest
-      ::File.join(Ichiban.project_root, 'compiled', dest_rel_to_compiled)
+      File.join(Ichiban.project_root, 'compiled', dest_rel_to_compiled)
     end
     
     # Returns a new instance based on an absolute path. Will automatically pick the right subclass.
@@ -45,7 +45,7 @@ module Ichiban
     
     def initialize(rel)
       @rel = rel
-      @abs = ::File.join(Ichiban.project_root, rel)
+      @abs = File.join(Ichiban.project_root, rel)
     end
     
     # Returns a new path where the old extension is replaced with new_ext
@@ -54,7 +54,7 @@ module Ichiban
     end
   end
   
-  class HTMLFile < File
+  class HTMLFile < ProjectFile
     def dest_rel_to_compiled
       d = @rel.slice('html/'.length..-1)
       (d.end_with?('.markdown') or d.end_with?('.md')) ? replace_ext(d, 'html') : d
@@ -65,12 +65,12 @@ module Ichiban
     end
   end
   
-  class LayoutFile < File
+  class LayoutFile < ProjectFile
   end
   
-  class JSFile < File
+  class JSFile < ProjectFile
     def dest_rel_to_compiled
-      ::File.join('js', @rel.slice('assets/js/'.length..-1))
+      File.join('js', @rel.slice('assets/js/'.length..-1))
     end
     
     def update
@@ -78,9 +78,9 @@ module Ichiban
     end
   end
   
-  class CSSFile < File
+  class CSSFile < ProjectFile
     def dest_rel_to_compiled
-      ::File.join('css', @rel.slice('assets/css/'.length..-1))
+      File.join('css', @rel.slice('assets/css/'.length..-1))
     end
     
     def update
@@ -88,10 +88,10 @@ module Ichiban
     end
   end
   
-  class SCSSFile < File
+  class SCSSFile < ProjectFile
     def dest_rel_to_compiled
       replace_ext(
-        ::File.join('css', @rel.slice('assets/css/'.length..-1)),
+        File.join('css', @rel.slice('assets/css/'.length..-1)),
         'css'
       )
     end
@@ -101,9 +101,9 @@ module Ichiban
     end
   end
   
-  class ImageFile < File
+  class ImageFile < ProjectFile
     def dest_rel_to_compiled
-      ::File.join('img', @rel.slice('assets/img/'.length..-1))
+      File.join('img', @rel.slice('assets/img/'.length..-1))
     end
     
     def update
@@ -111,7 +111,7 @@ module Ichiban
     end
   end
   
-  class MiscAssetFile < File
+  class MiscAssetFile < ProjectFile
     def dest_rel_to_compiled
       @rel.slice('assets/misc/'.length..-1)
     end
@@ -121,23 +121,29 @@ module Ichiban
     end
   end
   
-  class ModelFile < File
+  class ModelFile < ProjectFile
     def update
       # No-op. The watcher hands the path to each changed model file to the Loader instance.
       # So we don't have to worry about that here.
     end
   end
   
-  class HelperFile < File
+  class HelperFile < ProjectFile
     def update
       # No-op. The watcher hands the path to each changed model file to the Loader instance.
       # So we don't have to worry about that here.
     end
   end
   
-  class DataFile < File
+  class DataFile < ProjectFile
+    def update
+      Ichiban.script_runner.data_file_changed(self)
+    end
   end
   
-  class ScriptFile < File
+  class ScriptFile < ProjectFile
+    def update
+      Ichiban.script_runner.script_file_changed(self)
+    end
   end
 end

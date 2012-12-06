@@ -9,8 +9,8 @@ module Ichiban
     attr_writer :relative_url_root
     
     def self.load_file
-      config_file = ::File.join(Ichiban.project_root, 'config.rb')
-      raise "#{config_file} must exist" unless ::File.exists?(config_file)
+      config_file = File.join(Ichiban.project_root, 'config.rb')
+      raise "#{config_file} must exist" unless File.exists?(config_file)
       load config_file
     end
     

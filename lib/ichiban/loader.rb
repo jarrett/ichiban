@@ -1,6 +1,6 @@
 module Ichiban
   class Loader
-    # Pass in an Ichiban::File
+    # Pass in an IchibanFile
     def change(file)
       if file.is_a?(Ichiban::HelperFile) or file.is_a?(Ichiban::ModelFile)
         delete_all
@@ -27,12 +27,12 @@ module Ichiban
     
     def load_all
       # Load all models
-      Dir.glob(::File.join(Ichiban.project_root, 'models/**/*.rb')).each do |model_path|
+      Dir.glob(File.join(Ichiban.project_root, 'models/**/*.rb')).each do |model_path|
         load_file(model_path)
       end
       
       # Load all helpers, and pass them to HTMLCompiler::Context
-      Dir.glob(::File.join(Ichiban.project_root, 'helpers/**/*.rb')).each do |helper_path|
+      Dir.glob(File.join(Ichiban.project_root, 'helpers/**/*.rb')).each do |helper_path|
         const = load_file(helper_path)
         Ichiban::HTMLCompiler::Context.add_user_defined_helper(const)
       end
@@ -40,7 +40,7 @@ module Ichiban
     
     def load_file(path)
       load path
-      const_name = ::File.basename(path, ::File.extname(path)).classify
+      const_name = File.basename(path, File.extname(path)).classify
       begin
         const = Object.const_get(const_name)
       rescue NameError

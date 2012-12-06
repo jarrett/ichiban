@@ -10,8 +10,8 @@ module Ichiban
     
     def self.ensure_graph_initialized(graph_file_path)
       unless @graphs[graph_file_path]
-        if ::File.exists?(graph_file_path)
-          @graphs[graph_file_path] = JSON.parse(::File.read(graph_file_path))
+        if File.exists?(graph_file_path)
+          @graphs[graph_file_path] = JSON.parse(File.read(graph_file_path))
         else
           @graphs[graph_file_path] = {}
         end
@@ -25,7 +25,7 @@ module Ichiban
       graph = @graphs[graph_file_path]
       graph[ind] ||= []
       graph[ind] << dep unless graph[ind].include?(dep)
-      ::File.open(graph_file_path, 'w') do |f|
+      File.open(graph_file_path, 'w') do |f|
         f << JSON.generate(graph)
       end
     end

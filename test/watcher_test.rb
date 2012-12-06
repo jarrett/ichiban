@@ -106,6 +106,10 @@ class TestWatcher < MiniTest::Unit::TestCase
     end
   end
   
+  def test_watching_layouts
+    skip
+  end
+  
   def test_exception_logging
     src = File.join(Ichiban.project_root, 'html', 'exception.html')
     assert_logged('Test exception') do
