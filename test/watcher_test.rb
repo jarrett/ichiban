@@ -132,10 +132,28 @@ class TestWatcher < MiniTest::Unit::TestCase
           end
         )
       end
-      i = 0
       assert_reloaded(20) do
         TestModel.new.multiply(3) == 12
       end
+    end
+  end
+  
+  def test_helper_reload
+    helper_path = File.join(Ichiban.project_root, 'helpers', 'my_helper.rb')
+    run_watcher do
+      assert_equal 6, Ichiban::HTMLCompiler::Context.new({}).multiply(3)
+      File.open(helper_path, 'w') do |f|
+        f << %(
+          module MyHelper
+            def multiply(num)
+              num * 4
+            end
+          end
+        )
+      end
+    end
+    assert_reloaded(20) do
+      Ichiban::HTMLCompiler::Context.new({}).multiply(3) == 12
     end
   end
 end
