@@ -66,6 +66,9 @@ module Ichiban
   end
   
   class LayoutFile < ProjectFile
+    def update
+      raise 'not implemented'
+    end
   end
   
   class JSFile < ProjectFile

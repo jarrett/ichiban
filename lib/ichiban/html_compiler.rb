@@ -9,7 +9,12 @@ module Ichiban
     
     def compile_to_str
       # Compile the HTML of the content page, but not the layouts (yet)
-      ctx = Ichiban::HTMLCompiler::Context.new(:_current_path => @html_file.dest_rel_to_compiled)
+      ivars_for_ctx = {}
+      if @html_file
+        ivars_for_ctx[:_current_path] = @html_file.dest_rel_to_compiled
+      end
+      ivars_for_ctx.merge!(@ivars) if @ivars
+      ctx = Ichiban::HTMLCompiler::Context.new(ivars_for_ctx)
       inner_html = Eruby.new(File.read(@html_file.abs)).evaluate(ctx)
       
       # Compile Markdown if necessary
@@ -25,6 +30,8 @@ module Ichiban
     def initialize(html_file)
       @html_file = html_file
     end
+    
+    attr_writer :ivars
     
     def wrap_in_layouts(ctx, inner_rhtml)
       ctx.layout_stack.reverse.inject(inner_rhtml) do |html, layout_name|

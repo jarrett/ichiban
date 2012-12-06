@@ -45,6 +45,16 @@ module Ichiban
       File.join(Ichiban.project_root, '.script_dependencies.json')
     end
     
+    def generate(template_path, dest_path, ivars)
+      compiler = Ichiban::HTMLCompiler.new(nil) # No HTMLFile to be passed in
+      compiler.ivars = {:_current_path => dest_path}.merge(ivars)
+      html = compiler.compile_to_str
+      File.open(File.join(Ichiban.project_root, 'compiled', dest_path), 'w') do |f|
+        f << html
+      end
+      Ichiban.logger.compilation(template_path, dest_path)
+    end
+    
     def initialize(path)
       @path = path
     end
