@@ -9,10 +9,7 @@ module Ichiban
     
     def compile_to_str
       # Compile the HTML of the content page, but not the layouts (yet)
-      ivars_for_ctx = {}
-      if @html_file
-        ivars_for_ctx[:_current_path] = @html_file.dest_rel_to_compiled
-      end
+      ivars_for_ctx = {:_current_path => @html_file.dest_rel_to_compiled}
       ivars_for_ctx.merge!(@ivars) if @ivars
       ctx = Ichiban::HTMLCompiler::Context.new(ivars_for_ctx)
       inner_html = Eruby.new(File.read(@html_file.abs)).evaluate(ctx)

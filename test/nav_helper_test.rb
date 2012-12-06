@@ -19,7 +19,7 @@ class TestNavHelper < MiniTest::Unit::TestCase
   end
   
   def test_nav_does_not_link_current_page
-    html = in_context('/bar') do
+    html = in_context('/bar/') do
       nav([
         ['Foo', '/foo'],
         ['Bar', '/bar'],
@@ -37,7 +37,7 @@ class TestNavHelper < MiniTest::Unit::TestCase
   end
   
   def test_nav_ul_id
-    html = in_context('/bar') do
+    html = in_context('/bar/') do
       nav([
         ['Foo', '/foo'],
         ['Bar', '/bar'],
@@ -53,7 +53,7 @@ class TestNavHelper < MiniTest::Unit::TestCase
   end
   
   def test_nav_li_attrs
-    html = in_context('/bar') do
+    html = in_context('/bar/') do
       nav([
         ['Foo', '/foo', {'data-whatever' => 'something'}],
         ['Bar', '/bar'],
@@ -69,7 +69,7 @@ class TestNavHelper < MiniTest::Unit::TestCase
   end
   
   def test_sub_menu_open_when_on_inner_page
-    html = in_context('/two/three') do
+    html = in_context('/two/three/') do
       nav([
         ['One', '/one'],
         ['Two', '/two', [
@@ -102,7 +102,7 @@ class TestNavHelper < MiniTest::Unit::TestCase
   end
   
   def test_sub_menu_open_when_on_outermost_page
-    html = in_context('/two') do
+    html = in_context('/two/') do
       nav([
         ['One', '/one'],
         ['Two', '/two', [

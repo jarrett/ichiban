@@ -1,4 +1,4 @@
-{'employees' => [
-  {'first' => 'Thomas', 'last' => 'Jefferson'},
-  {'first' => 'George', 'last' => 'Washington'}
+{"employees": [
+  {"first": "Thomas", "last": "Jefferson"},
+  {"first": "George", "last": "Washington"}
 ]}

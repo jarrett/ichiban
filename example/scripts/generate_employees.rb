@@ -6,9 +6,9 @@ JSON.parse(
   )
 )['employees'].each do |employee|
   generate(
-    '_employee',
-    employee['first'] + '-' + employee['last'],
-    :first => employee['first']
+    '_employee.html',
+    employee['first'].downcase + '-' + employee['last'].downcase + '.html',
+    :first => employee['first'],
     :last => employee['last']
   )
 end
