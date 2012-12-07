@@ -15,6 +15,10 @@ module Ichiban
       case @task
       when 'watch'
         Ichiban::Watcher.new.start
+      when 'new'
+        Ichiban::ProjectGenerator.new(
+          File.expand_path(@args[0])
+        ).generate
       else
         print_usage
       end
