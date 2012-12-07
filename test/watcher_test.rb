@@ -24,7 +24,7 @@ class TestWatcher < MiniTest::Unit::TestCase
   # Takes a block. The watcher will be stopped after the block is executed.
   def run_watcher
     watcher = Ichiban::Watcher.new(:latency => 0.01)
-    watcher.start
+    watcher.start(false) # nonblocking
     begin
       # These sleep statements deal with the race condition. There doesn't seem to be any other
       # solution for that.
@@ -107,7 +107,7 @@ class TestWatcher < MiniTest::Unit::TestCase
   end
   
   def test_watching_layouts
-    skip
+    flunk 'This critical feature is not implemented.'
   end
   
   def test_exception_logging
