@@ -20,7 +20,7 @@ module Ichiban
     end
     
     def self.dep_graph_path
-      File.join(Ichiban.project_root, '.script_dependencies.json')
+      '.script_dependencies.json'
     end
     
     # Takes an absolute path

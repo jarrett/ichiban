@@ -107,7 +107,23 @@ class TestWatcher < MiniTest::Unit::TestCase
   end
   
   def test_watching_layouts
-    flunk 'This critical feature is not implemented.'
+    # First, make sure the old version of the file exists, and that our dependency graph has
+    # connected it to the layout.
+    Ichiban::HTMLFile.new('html/changed_layout.html').update
+    assert(
+      File.exists?(File.join(Ichiban.project_root, 'compiled/changed_layout.html')),
+      "Expected #{File.join(Ichiban.project_root, 'compiled/changed_layout.html')} to exist"
+    )
+    
+    # Now update the layout
+    layout_path = File.join(Ichiban.project_root, 'layouts/default.html')
+    old_layout_code = File.read(layout_path)
+    run_watcher do
+      File.open(layout_path, 'w') do |f|
+        f << old_layout_code.sub(/<h1>.*<\/h1>/, '<h1>The New Header</h1>')
+      end
+    end
+    assert_compiled 'changed_layout.html'
   end
   
   def test_exception_logging

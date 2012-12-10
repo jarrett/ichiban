@@ -32,6 +32,11 @@ require 'ichiban/scripts'
 module Ichiban
   # In addition to setting the variable, this loads the config file
   def self.project_root=(path)
+    unless @project_root == path
+      # If we're changing the project root, then we need to clear all dependency graphs from memory.
+      # This doesn't delete any files.
+      Ichiban::Dependencies.clear_graphs
+    end
     @project_root = path
     if path # It's valid to set project_root to nil, though this would likely only happen in tests
       Ichiban::Config.load_file

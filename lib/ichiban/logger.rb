@@ -46,6 +46,15 @@ module Ichiban
       out msg
     end
     
+    def layout(path)
+      path = path.slice(Ichiban.project_root.length + 1..-1)
+      msg = "#{path} changed; recompiling affected pages"
+      if ansi?
+        msg = ANSI.color(msg, :magenta)
+      end
+      out msg
+    end
+    
     def initialize
       @out = STDOUT
     end
@@ -63,8 +72,14 @@ module Ichiban
       @out = io
     end
     
-    def out(msg)
-      @out.puts msg
+    # Overloaded. Pass in a string and it writes to the output stream.
+    # Pass in nothing and it returns the output stream.
+    def out(msg = nil)
+      if msg.nil?
+        @out
+      else
+        @out.puts msg
+      end
     end
     
     def script_run(ind_path, dep_path)

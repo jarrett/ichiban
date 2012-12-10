@@ -41,7 +41,7 @@ module Ichiban
           :filename => layout_path
         )
         html = eruby.evaluate(ctx) { html }
-        Ichiban::Dependencies.update('.layout_dependencies.json', layout_name, @html_file.abs)
+        Ichiban::Dependencies.update('.layout_dependencies.json', layout_name, @html_file.rel)
         html
       end
     end

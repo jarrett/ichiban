@@ -1,24 +1,20 @@
 require File.join(File.expand_path(File.dirname(__FILE__)), 'test_helper.rb')
 require 'fileutils'
 
-module Ichiban
-  module Dependencies
-    def self.clear_graphs
-      @graphs = {}
-    end
-  end
-end
-
 class TestDependencies < MiniTest::Unit::TestCase
-  GRAPH_FILE = File.join(File.expand_path(File.dirname(__FILE__)), '.example_dependencies.json')
+  include ExampleDirectory
+  
+  GRAPH_FILE = '.example_dependencies.json'
   
   def setup
+    copy_example_dir
     Ichiban::Dependencies.clear_graphs
     FileUtils.rm GRAPH_FILE if File.exists?(GRAPH_FILE)
   end
   
   def teardown
-    setup
+    FileUtils.rm_rf Ichiban.project_root
+    Ichiban.project_root = nil
   end
   
   def test_read_graph_from_file

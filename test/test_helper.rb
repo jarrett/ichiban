@@ -43,8 +43,8 @@ module CompilationAssertions
     compiled_data = File.read(compiled_path)
     expected_data = File.read(expected_path)
     # We don't want to print diffs for huge binary files
-    if compiled_data.length < 4000 and expected_data.length > 4000
-      assert_equal expected_data, compiled_data
+    if compiled_data.length < 4000 and expected_data.length < 4000
+      assert expected_data == compiled_data, "Expected #{compiled_path} to be identical to #{expected_path} \n#{diff expected_data, compiled_data}"
     else
       assert expected_data == compiled_data, "Expected #{compiled_path} to be identical to #{expected_path}"
     end
@@ -54,11 +54,16 @@ end
 module LoggingAssertions
   # Takes a block. Redirects logger output form STDOUT, so you won't see it.
   def assert_logged(str, msg = nil)
-    out = StringIO.new
-    Ichiban.logger.out = out
-    yield
-    out.rewind
-    assert out.read.include?(str), msg || "Expected log to include #{str}"
+    old_out = Ichiban.logger.out
+    begin
+      new_out = StringIO.new
+      Ichiban.logger.out = new_out
+      yield
+      new_out.rewind
+      assert new_out.read.include?(str), msg || "Expected log to include #{str}"
+    ensure
+      Ichiban.logger.out = old_out
+    end
   end
 end
 

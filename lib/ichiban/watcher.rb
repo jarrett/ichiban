@@ -9,10 +9,11 @@ module Ichiban
     def start(blocking = true)
       @loader = Ichiban::Loader.new
       
-      puts 'Starting watcher'
+      Ichiban.logger.out 'Starting watcher'
       begin
         @listener = Listen.to(
           File.join(Ichiban.project_root, 'html'),
+          File.join(Ichiban.project_root, 'layouts'),
           File.join(Ichiban.project_root, 'assets'),
           File.join(Ichiban.project_root, 'models'),
           File.join(Ichiban.project_root, 'helpers'),
@@ -21,8 +22,8 @@ module Ichiban
         )
         .ignore(/.listen_test$/)
         .latency(@options[:latency])
-        .change do |modified, added, deleted|        
-          (modified + added).each do |path|
+        .change do |modified, added, deleted|
+          (modified + added).uniq.each do |path|
             if file = Ichiban::ProjectFile.from_abs(path)
               @loader.change(file) # Tell the Loader that this file has changed
               begin
@@ -35,15 +36,17 @@ module Ichiban
           deleted.each do |path|
             Ichiban::Deleter.new.delete(path)
           end
-        end.start(blocking)
+        end
+        @listener.start(blocking)
       rescue Interrupt
-        puts "\nStopping watcher"
+        Ichiban.logger.out "Stopping watcher"
         exit 0
       end
     end
     
     def stop
       if @listener
+        Ichiban.logger.out "Stopping watcher"
         @listener.stop
         @listener = nil
       end
