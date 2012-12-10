@@ -34,6 +34,8 @@ module Ichiban
         Ichiban::ScriptFile.new(rel)
       elsif rel.start_with?('helpers')
         Ichiban::HelperFile.new(rel)
+      elsif rel == 'webserver/htaccess.txt'
+        Ichiban::HtaccessFile.new(rel)
       else
         nil
       end
@@ -127,6 +129,16 @@ module Ichiban
   class MiscAssetFile < ProjectFile
     def dest_rel_to_compiled
       @rel.slice('assets/misc/'.length..-1)
+    end
+    
+    def update
+      Ichiban::AssetCompiler.new(self).compile
+    end
+  end
+  
+  class HtaccessFile < ProjectFile
+    def dest_rel_to_compiled
+      '.htaccess'
     end
     
     def update

@@ -135,7 +135,23 @@ class TestWatcher < MiniTest::Unit::TestCase
     end
   end
   
-  def test_watching_assets
+  def test_watching_img
+    skip
+  end
+  
+  def test_watching_css
+    skip
+  end
+  
+  def test_watching_js
+    skip
+  end
+  
+  def test_watching_misc
+    skip
+  end
+  
+  def test_watching_htaccess
     skip
   end
   

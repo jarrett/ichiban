@@ -40,4 +40,10 @@ class TestAssetCompiler < MiniTest::Unit::TestCase
     Ichiban::AssetCompiler.new(file).compile
     assert_compiled('test.txt.gz')
   end
+  
+  def test_htaccess_copying
+    file = Ichiban::HtaccessFile.new('webserver/htaccess.txt')
+    Ichiban::AssetCompiler.new(file).compile
+    '.htaccess'
+  end
 end

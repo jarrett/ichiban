@@ -18,7 +18,8 @@ module Ichiban
           File.join(Ichiban.project_root, 'models'),
           File.join(Ichiban.project_root, 'helpers'),
           File.join(Ichiban.project_root, 'scripts'),
-          File.join(Ichiban.project_root, 'data')
+          File.join(Ichiban.project_root, 'data'),
+          File.join(Ichiban.project_root, 'webserver')
         )
         .ignore(/.listen_test$/)
         .latency(@options[:latency])
