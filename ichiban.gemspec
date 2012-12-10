@@ -6,7 +6,8 @@ Gem::Specification.new do |s|
   s.description  = 'Static website compiler with advanced feature, including watcher script.'
   s.authors      = ['Jarrett Colby']
   s.email        = 'jarrett@madebyhq.com'
-  s.files        = Dir.glob('lib/**/*')
+  s.files        = Dir.glob('lib/**/*') + Dir.glob('empty_project/**/*')
+  s.executables  = ['ichiban']
   s.homepage     = 'https://github.com/jarrett/ichiban'
   
   s.add_runtime_dependency 'erubis'

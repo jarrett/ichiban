@@ -1,0 +1,24 @@
+RewriteEngine On
+
+# Force the trailing slash for all pages unless they end in .html
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+# Skipping pages with the .html extension is necessary to avoid an infinite chain of .html. See the note at the bottom.
+RewriteCond %{REQUEST_URI} !\.html$
+RewriteRule ^(.*[^/])$ /$1/ [R=301,L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+# If the HTML file doesn't exist don't attempt to rewrite, or we'll get an infinite loop
+RewriteCond %{REQUEST_FILENAME}.html -f
+# If we've already tried appending HTML and the file still doesn't exist, don't do it again. See the note at the bottom.
+RewriteCond %{REQUEST_URI} !\.html$
+RewriteRule ^(.*)/$ $1.html
+
+ErrorDocument 404 /404.html
+ErrorDocument 422 /422.html
+ErrorDocument 500 /500.html
+
+# Note on infinite .html appending loops: We have to take pains to ensure that if a certain file, say foo.html, exists,
+# then a path like /foo/bar won't get .html appended an infinite number of times. This can happen because %{REQUEST_FILENAME}
+# would match /foo/bar/ to foo.html. Our redirect to force trailing slashes then sends us through an infinite loop.

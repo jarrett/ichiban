@@ -6,8 +6,12 @@ module Ichiban
     end
     
     def print_usage
-      puts "Usage: ichiban <command>"
-      puts "  Available commands: watch"
+      puts(
+        "Usage: ichiban [command]\n" +
+        "Available commands: \n" +
+        "  watch\n" +
+        "  new [path]"
+      )
     end
     
     def run

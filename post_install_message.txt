@@ -1,3 +1,4 @@
+
 Ichiban was installed successfully.
 Type `ichiban` for usage hints.
 
