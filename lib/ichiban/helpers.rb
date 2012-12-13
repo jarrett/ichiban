@@ -62,46 +62,6 @@ module Ichiban
       content_tag 'a', text, options.merge('href' => url)
     end
     
-    # Pass in an array of this form:
-    #
-    #   [
-    #     ['Link Text', '/path/from/relative/url/root/']
-    #     ['Link Text', '/path/from/relative/url/root/', {'id' => 'foo'}]
-    #   ]
-    #
-    # You can also do this, as a convenience:
-    #
-    #   nav([
-    #     ['Link Text', 'path/from/section/root/']
-    #   ], :section => 'section-name')
-    # 
-    # Which will generate this href:
-    # 
-    #   /section-name/path/from/section/root/
-    #
-    # If you don't specify a section, and your URLs don't have leading slashes,
-    # the hrefs will use relative URLs.
-=begin
-    def nav(items, options = {})
-      ul_options = _limit_options(options, %w(id class)) { |key, value| key.to_s.start_with?('data-') }
-      content_tag('ul', ul_options) do
-        items.inject('') do |lis, (text, path, attrs)|
-          if options[:section]
-            path = File.join(options[:section], path)
-          end
-          path = normalize_path(path)
-          lis + content_tag('li', (attrs or {})) do
-            if path_with_slashes(current_path) == path_with_slashes(path)
-              content_tag('span', text, 'class' => 'selected')
-            else
-              link_to(text, path)
-            end
-          end
-        end
-      end
-    end
-=end
-    
     # If the path has a leading slash, it will be made absolute using relative_url_root.
     # Otherwise, it will remain relative.
     def normalize_path(path)
@@ -117,6 +77,15 @@ module Ichiban
       path = '/' + path unless path.start_with?('/')
       path << '/' unless path.end_with?('/')
       path
+    end
+    
+    def partial(path)
+      file = Ichiban::PartialHTMLFile.new(
+        File.join(Ichiban.project_root, 'html', path)
+      )
+      compiler = Ichiban::HTMLCompiler.new(file)
+      compiler.ivars = to_hash # to_hash is inherited from Erubis::Context. It's a hash of the instance variables.
+      compiler.compile_to_str(file)
     end
     
     def relative_url_root

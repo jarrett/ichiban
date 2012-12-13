@@ -13,7 +13,11 @@ module Ichiban
       rel = abs.slice(Ichiban.project_root.length..-1) # Relative to project root
       rel.sub!(/^\//, '') # Remove leading slash
       if rel.start_with?('html') and rel.end_with?('.html')
-        Ichiban::HTMLFile.new(rel)
+        if File.basename(rel).start_with?('_')
+          Ichiban::PartialHTMLFile.new(rel)
+        else
+          Ichiban::HTMLFile.new(rel)
+        end
       elsif rel.start_with?('layouts') and rel.end_with?('.html')
         Ichiban::LayoutFile.new(rel)
       elsif rel.start_with?('assets/js')
@@ -69,6 +73,23 @@ module Ichiban
     end
   end
   
+  class PartialHTMLFile < ProjectFile
+    def partial_name
+      File.basename(
+        @abs.slice(Ichiban.project_root.length + 1..-1),
+        File.extname(@abs)
+      )
+    end
+    
+    def update
+      if deps = Ichiban::Dependencies.graph('.partial_dependencies.json')[partial_name]
+        deps.each do |dep|
+          raise 'not implemented'
+        end
+      end
+    end
+  end
+  
   class LayoutFile < ProjectFile
     def layout_name
       File.basename(@abs, File.extname(@abs))
@@ -76,9 +97,11 @@ module Ichiban
     
     def update
       Ichiban.logger.layout(@abs)
-      Ichiban::Dependencies.graph('.layout_dependencies.json')[layout_name].each do |dep|
-        # dep is a path relative to the project root
-        Ichiban::HTMLFile.new(dep).update
+      if deps = Ichiban::Dependencies.graph('.layout_dependencies.json')[layout_name]
+        deps.each do |dep|
+          # dep is a path relative to the project root
+          Ichiban::HTMLFile.new(dep).update
+        end
       end
     end
   end
@@ -162,13 +185,13 @@ module Ichiban
   
   class DataFile < ProjectFile
     def update
-      Ichiban.script_runner.data_file_changed(self)
+      Ichiban.script_runner.data_file_changed(@abs)
     end
   end
   
   class ScriptFile < ProjectFile
     def update
-      Ichiban.script_runner.script_file_changed(self)
+      Ichiban.script_runner.script_file_changed(@abs)
     end
   end
 end

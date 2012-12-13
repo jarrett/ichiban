@@ -7,7 +7,7 @@ module Ichiban
       Ichiban.logger.compilation(@html_file.abs, @html_file.dest)
     end
     
-    def compile_to_str
+    def compile_to_str      
       # Compile the HTML of the content page, but not the layouts (yet)
       ivars_for_ctx = {:_current_path => @html_file.dest_rel_to_compiled}
       ivars_for_ctx.merge!(@ivars) if @ivars
@@ -19,11 +19,16 @@ module Ichiban
         inner_html = Ichiban::Markdown.compile(inner_html) # Will look for installed Markdown gems
       end
       
-      # Layouts
-      wrap_in_layouts(ctx, inner_html)
+      # Do layouts if appropriate
+      if @html_file.is_a?(Ichiban::HTMLFile)
+        wrap_in_layouts(ctx, inner_html)
+      else
+        # It's a PartialHTMLFile
+        inner_html
+      end
     end
     
-    # Takes an instance of Ichiban::HTMLFile
+    # Takes an instance of Ichiban::HTMLFile or Ichiban::PartialHTMLFile
     def initialize(html_file)
       @html_file = html_file
     end
@@ -60,8 +65,8 @@ module Ichiban
       
       # An array of helper modules. Each Context instance will be extended with them on init.
       # We could just include the modules in this class. But that would break reloading. Once a
-      # module has been included, deleted the module doesn't un-include it. So instead, we limit the
-      # damage to a particular instance of Context.
+      # module has been included, deleting the module doesn't un-include it. So instead, we limit
+      # the damage to a particular instance of Context.
       @user_defined_helpers = []
       
       def self.add_user_defined_helper(mod)
