@@ -7,9 +7,20 @@ module Ichiban
       Ichiban.logger.compilation(@html_file.abs, @html_file.dest)
     end
     
-    def compile_to_str      
+    def compile_to_str 
       # Compile the HTML of the content page, but not the layouts (yet)
-      ivars_for_ctx = {:_current_path => @html_file.dest_rel_to_compiled}
+      if @html_file.is_a?(Ichiban::HTMLFile)
+        # @_template_path is a path relative to the html folder. It points to the current *complete*
+        # HTML file being rendered. I.e. if we're currently rendering a partial, @_template_path
+        # will *not* point to the partial file.
+        ivars_for_ctx = {
+          :_current_path  => @html_file.web_path,
+          :_template_path => @html_file.rel.slice('html/'.length..-1)
+        }
+      else
+        # It's a PartialHTMLFile
+        ivars_for_ctx = {}
+      end
       ivars_for_ctx.merge!(@ivars) if @ivars
       ctx = Ichiban::HTMLCompiler::Context.new(ivars_for_ctx)
       inner_html = Eruby.new(File.read(@html_file.abs)).evaluate(ctx)

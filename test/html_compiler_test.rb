@@ -32,8 +32,4 @@ class TestHtmlCompiler < MiniTest::Unit::TestCase
     Ichiban::HTMLCompiler.new(file).compile
     assert_compiled 'nested_layouts.html'
   end
-  
-  def test_partial_templates
-    flunk 'essential feature not implemented'
-  end
 end

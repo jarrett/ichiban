@@ -71,9 +71,15 @@ module Ichiban
     def update
       Ichiban::HTMLCompiler.new(self).compile
     end
+    
+    def web_path
+      d = dest_rel_to_compiled
+      '/' + File.basename(d, File.extname(d)) + '/'
+    end
   end
   
   class PartialHTMLFile < ProjectFile
+    # Returns something like 'foo/bar'
     def partial_name
       File.basename(
         @abs.slice(Ichiban.project_root.length + 1..-1),
@@ -84,7 +90,9 @@ module Ichiban
     def update
       if deps = Ichiban::Dependencies.graph('.partial_dependencies.json')[partial_name]
         deps.each do |dep|
-          raise 'not implemented'
+          #raise File.join('html', dep)
+          # dep will be a path relative to the html directory. It looks like this: 'folder/file.html'
+          Ichiban::HTMLFile.new(File.join('html', dep)).update
         end
       end
     end

@@ -11,10 +11,7 @@ module Ichiban
         dest = nil
       end
       if dest and File.exists?(dest)
-        puts 'yep'
         FileUtils.rm(dest)
-      else
-        puts 'nope'
       end
     
       # Log the deletion(s)

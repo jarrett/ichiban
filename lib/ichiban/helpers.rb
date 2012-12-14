@@ -21,7 +21,7 @@ module Ichiban
       output << tag_attrs(options) << ">#{content}</#{name}>"
     end
     
-    # Returns the path relative to site root
+    # Returns the path relative to site root. Includes leading and trailing slash.
     def current_path
       @_current_path
     end
@@ -81,11 +81,13 @@ module Ichiban
     
     def partial(path)
       file = Ichiban::PartialHTMLFile.new(
-        File.join(Ichiban.project_root, 'html', path)
+        File.join('html', path)
       )
+      # Record the dependency like this: 'folder/partial-name' => 'folder/included-file.html'
+      Ichiban::Dependencies.update('.partial_dependencies.json', file.partial_name, @_template_path)
       compiler = Ichiban::HTMLCompiler.new(file)
       compiler.ivars = to_hash # to_hash is inherited from Erubis::Context. It's a hash of the instance variables.
-      compiler.compile_to_str(file)
+      compiler.compile_to_str
     end
     
     def relative_url_root

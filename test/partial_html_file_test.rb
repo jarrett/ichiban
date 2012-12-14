@@ -39,7 +39,7 @@ class TestPartialHTMLFile < MiniTest::Unit::TestCase
     Ichiban::HTMLFile.new(File.join('html', 'includes_partial.html')).update
     
     File.open(partial_path, 'w') do |f|
-      f << '<p>Version 2</p>'
+      f << '<p>Version 2. Current path: <%= @_current_path %></p>'
     end
     file = Ichiban::ProjectFile.from_abs(partial_path)
     file.update
@@ -63,9 +63,5 @@ class TestPartialHTMLFile < MiniTest::Unit::TestCase
       ).sub('Current path:', 'The current path:')
       assert_equal expected_code, File.read(File.join(Ichiban.project_root, 'compiled', name))
     end
-  end
-  
-  def test_inherited_instance_variables
-    skip
   end
 end
