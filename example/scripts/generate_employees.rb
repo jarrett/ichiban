@@ -1,4 +1,5 @@
 depends_on 'data/employees.json'
+depends_on 'html/_employee.html'
 
 JSON.parse(
   File.read(

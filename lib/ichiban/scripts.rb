@@ -34,14 +34,20 @@ module Ichiban
     # Every file that the script depends on (e.g. a data file) should be declared with this method.
     # This is how Ichiban knows to re-run the script when one of the files changes. Pass in a path
     # relative to the project root.
+    #
+    # However, you don't need to declare dependencies for the templates the script uses. Those will\
+    # automatically be tracked.
     def depends_on(ind_path)
       if ind_path.start_with?('/')
         raise(ArgumentError, 'depends_on must be passed a path relative to the project root, e.g. "data/employees.xml"')
       end
+      # Format in dependency graph: 'data/employees.json' => 'scripts/generate_employees.rb'
       Ichiban::Dependencies.update(
         Ichiban::ScriptRunner.dep_graph_path,
+        
         # Path to independent file, relative to project root.
         ind_path,
+        
         # Path to dependent file (i.e. this script), relative to project root.
         # Add one to the length to remove the leading slash.
         @path.slice(Ichiban.project_root.length + 1..-1)

@@ -1,4 +1,6 @@
+$blue: #0000f0;
+
 div#container {
-  margin: 0 auto;
+  margin: 0 auto; color: $blue;
   div#header {background: #f0f0f0;}
 }

@@ -136,23 +136,38 @@ class TestWatcher < MiniTest::Unit::TestCase
   end
   
   def test_watching_img
-    skip
+    run_watcher do
+      FileUtils.touch File.join(Ichiban.project_root, 'assets/img/test.png')
+    end
+    assert_compiled 'img/test.png'
   end
   
-  def test_watching_css
-    skip
+  def test_watching_scss
+    run_watcher do
+      FileUtils.touch File.join(Ichiban.project_root, 'assets/css/screen.scss')
+    end
+    assert_compiled 'css/screen.css'
   end
   
   def test_watching_js
-    skip
+    run_watcher do
+      FileUtils.touch File.join(Ichiban.project_root, 'assets/js/test.js')
+    end
+    assert_compiled 'js/test.js'
   end
   
   def test_watching_misc
-    skip
+    run_watcher do
+      FileUtils.touch File.join(Ichiban.project_root, 'assets/misc/test.txt.gz')
+    end
+    assert_compiled 'test.txt.gz'
   end
   
   def test_watching_htaccess
-    skip
+    run_watcher do
+      FileUtils.touch File.join(Ichiban.project_root, 'webserver/htaccess.txt')
+    end
+    assert_compiled '.htaccess'
   end
   
   def test_reload_model

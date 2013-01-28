@@ -88,11 +88,22 @@ module Ichiban
     end
     
     def update
+      # Normal HTML files that depend on this partial
       if deps = Ichiban::Dependencies.graph('.partial_dependencies.json')[partial_name]
         deps.each do |dep|
-          #raise File.join('html', dep)
           # dep will be a path relative to the html directory. It looks like this: 'folder/file.html'
           Ichiban::HTMLFile.new(File.join('html', dep)).update
+        end
+      end
+      
+      # Scripts that depend on this partial
+      dep_key = "html/#{partial_name}.html"
+      if deps = Ichiban::Dependencies.graph('.script_dependencies.json')[dep_key]
+        deps.each do |dep|
+          # dep will be a path relative to the html directory. It looks like this: 'folder/file.html'
+          script_path = File.join(Ichiban.project_root, dep)
+          Ichiban.logger.script_run(@abs, script_path)
+          script = Ichiban::Script.new(script_path).run
         end
       end
     end

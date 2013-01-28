@@ -50,14 +50,19 @@ class TestPartialHTMLFile < MiniTest::Unit::TestCase
     # Make sure the depencency graph knows about this
     Ichiban::ScriptFile.new(File.join('scripts', 'generate_employees.rb')).update
     
+    # Change the partial template
     path = File.join(Ichiban.project_root, 'html', '_employee.html')
     original_code = File.read(path)
     File.open(path, 'w') do |f|
       f << original_code.sub('Current path:', 'The current path:')
     end
+    
+    # Call update on the file (an instance of Ichiban::PartialHTMLFile)
     file = Ichiban::ProjectFile.from_abs(path)
     file.update
-    ['thomas-jefferson.html', 'george-washington.html', 'ben-franklin.html'].each do |name|
+    
+    # Check that each generated file contains the new HTML
+    ['thomas-jefferson.html', 'george-washington.html'].each do |name|
       expected_code = File.read(
         File.join(Ichiban.project_root, 'expected', name)
       ).sub('Current path:', 'The current path:')

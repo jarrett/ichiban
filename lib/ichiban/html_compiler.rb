@@ -8,21 +8,23 @@ module Ichiban
     end
     
     def compile_to_str 
-      # Compile the HTML of the content page, but not the layouts (yet)
+      # @_template_path is a path relative to the html folder. It points to the current *complete*
+      # HTML file being rendered. I.e. if we're currently rendering a partial, @_template_path
+      # will *not* point to the partial file.
+      #
+      # _template_path may be overwritten later when we look at @ivars. This is good, because
+      # if we're in a partial, and the including template has already set _template_path, we want
+      # to inherit that value. (When you call partial from a template, all of the including template's
+      # instance variables, including @_template_path, will be put into @ivars.)
+      ivars_for_ctx = {:_template_path => @html_file.rel.slice('html/'.length..-1)}
+      
       if @html_file.is_a?(Ichiban::HTMLFile)
-        # @_template_path is a path relative to the html folder. It points to the current *complete*
-        # HTML file being rendered. I.e. if we're currently rendering a partial, @_template_path
-        # will *not* point to the partial file.
-        ivars_for_ctx = {
-          :_current_path  => @html_file.web_path,
-          :_template_path => @html_file.rel.slice('html/'.length..-1)
-        }
-      else
-        # It's a PartialHTMLFile
-        ivars_for_ctx = {}
+        ivars_for_ctx[:_current_path] = @html_file.web_path
       end
       ivars_for_ctx.merge!(@ivars) if @ivars
+      
       ctx = Ichiban::HTMLCompiler::Context.new(ivars_for_ctx)
+      
       inner_html = Eruby.new(File.read(@html_file.abs)).evaluate(ctx)
       
       # Compile Markdown if necessary
