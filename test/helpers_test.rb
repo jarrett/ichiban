@@ -20,19 +20,47 @@ class TestHelpers < MiniTest::Unit::TestCase
   end
   
   def test_stylesheet_link_tag
-    skip
+    result = nil
+    Ichiban.config do |cfg|
+      cfg.relative_url_root = '/foo'
+    end
+    in_context do
+      result = stylesheet_link_tag 'bar.css'
+    end
+    assert_html '<link href="/foo/css/bar.css" rel="stylesheet" type="text/css" media="screen"/>', result
   end
   
   def test_javascript_include_tag
-    skip
+    result = nil
+    Ichiban.config do |cfg|
+      cfg.relative_url_root = '/foo'
+    end
+    in_context do
+      result = javascript_include_tag 'bar.js'
+    end
+    assert_html '<script type="text/javascript" src="/foo/js/bar.js"></script>', result
   end
   
   def test_capture
-    skip
+    template = '<p>Foo<% captured = capture do %>Bar<% end %></p><p><%= captured %></p>'
+    ctx = Ichiban::HTMLCompiler::Context.new(:_current_path => '/')
+    result = Ichiban::HTMLCompiler::Eruby.new(template).evaluate(ctx)
+    assert_html '<p>Foo</p><p>Bar</p>', result
+  end
+  
+  def test_concat
+    template = '<p><% concat "Foo" %></p>'
+    ctx = Ichiban::HTMLCompiler::Context.new(:_current_path => '/')
+    result = Ichiban::HTMLCompiler::Eruby.new(template).evaluate(ctx)
+    assert_html '<p>Foo</p>', result
   end
   
   def test_link_to
-    skip
+    result = nil
+    in_context do
+      result = link_to 'Example', 'http://example.com/', 'class' => 'the_class', 'id' => 'the_id'
+    end
+    assert_html '<a href="http://example.com/" class="the_class", id="the_id">Example</a>', result
   end
   
   def test_normalize_path
@@ -52,7 +80,21 @@ class TestHelpers < MiniTest::Unit::TestCase
   end
   
   def test_path_with_slashes
-    skip
+    # Adds leading and trailing slashes if none are present
+    result_1 = nil
+    result_2 = nil
+    result_3 = nil
+    result_4 = nil
+    in_context do
+      result_1 = path_with_slashes 'foo'
+      result_2 = path_with_slashes '/foo'
+      result_3 = path_with_slashes 'foo/'
+      result_4 = path_with_slashes '/foo/'
+    end
+    assert_equal '/foo/', result_1
+    assert_equal '/foo/', result_2
+    assert_equal '/foo/', result_3
+    assert_equal '/foo/', result_4
   end
   
   def test_relative_url_root
