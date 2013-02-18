@@ -12,7 +12,7 @@ module Ichiban
     def self.from_abs(abs)
       rel = abs.slice(Ichiban.project_root.length..-1) # Relative to project root
       rel.sub!(/^\//, '') # Remove leading slash
-      if rel.start_with?('html') and rel.end_with?('.html')
+      if rel.start_with?('html') and (rel.end_with?('.html') or rel.end_with?('.md') or rel.end_with?('.markdown'))
         if File.basename(rel).start_with?('_')
           Ichiban::PartialHTMLFile.new(rel)
         else

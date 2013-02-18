@@ -135,6 +135,18 @@ class TestWatcher < MiniTest::Unit::TestCase
     end
   end
   
+  def test_watching_markdown
+    run_watcher do
+      FileUtils.touch File.join(Ichiban.project_root, 'html/markdown_page.md')
+    end
+    assert_compiled 'markdown_page.html'
+    
+    run_watcher do
+      FileUtils.touch File.join(Ichiban.project_root, 'html/markdown_page_2.markdown')
+    end
+    assert_compiled 'markdown_page_2.html'
+  end
+  
   def test_watching_img
     run_watcher do
       FileUtils.touch File.join(Ichiban.project_root, 'assets/img/test.png')
