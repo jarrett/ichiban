@@ -164,6 +164,7 @@ class TestWatcher < MiniTest::Unit::TestCase
   end
   
   def test_watching_htaccess
+    FileUtils.rm File.join(Ichiban.project_root, 'compiled/.htaccess')
     run_watcher do
       FileUtils.touch File.join(Ichiban.project_root, 'webserver/htaccess.txt')
     end
