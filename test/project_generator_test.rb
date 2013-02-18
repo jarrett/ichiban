@@ -13,6 +13,7 @@ class TestProjectGenerator < MiniTest::Unit::TestCase
   
   def test_generate_project
     Ichiban::ProjectGenerator.new(project_dest).generate
+    # Test that each of these files exists:
     %w(
       Capfile
       html/index.html
