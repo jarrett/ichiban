@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name         = 'ichiban'
-  s.version      = '1.0.2'
+  s.version      = '1.0.3'
   s.date         = '2012-11-29'
   s.summary      = 'Ichiban'
   s.description  = 'Static website compiler with advanced feature, including watcher script.'
