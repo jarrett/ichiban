@@ -35,7 +35,7 @@ module Ichiban
             end
           end                    
           deleted.each do |path|
-            Ichiban::Deleter.new.delete(path)
+            Ichiban::Deleter.new.delete_dest(path)
           end
         end
         @listener.start(blocking)

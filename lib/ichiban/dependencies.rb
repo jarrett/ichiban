@@ -8,6 +8,15 @@ module Ichiban
       @graphs = {}
     end
     
+    def self.delete_dep(graph_file_path, dep)
+      ensure_graph_initialized(graph_file_path)
+      graph = @graphs[graph_file_path]
+      graph.each do |ind, deps|
+        deps.delete dep
+      end
+      save_graph_file(graph_file_path, graph)
+    end
+    
     # graph_file_path is a relative path
     def self.graph(graph_file_path)
       ensure_graph_initialized(graph_file_path)
@@ -26,6 +35,12 @@ module Ichiban
       end
     end
     
+    def self.save_graph_file(graph_file_path, graph)
+      File.open(File.join(Ichiban.project_root, graph_file_path), 'w') do |f|
+        f << JSON.generate(graph)
+      end
+    end
+    
     # Loads the graph from disk if it's not already in memory. Updates the graph. Writes the new
     # graph to disk. graph_file_path is a relative path.
     def self.update(graph_file_path, ind, dep)
@@ -33,9 +48,7 @@ module Ichiban
       graph = @graphs[graph_file_path]
       graph[ind] ||= []
       graph[ind] << dep unless graph[ind].include?(dep)
-      File.open(File.join(Ichiban.project_root, graph_file_path), 'w') do |f|
-        f << JSON.generate(graph)
-      end
+      save_graph_file(graph_file_path, graph)
     end
   end
 end

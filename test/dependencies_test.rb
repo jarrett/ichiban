@@ -50,4 +50,8 @@ class TestDependencies < MiniTest::Unit::TestCase
     # Check that it is updated on disk
     assert_equal({'ind1' => %w(dep1 dep2 dep3 dep6), 'ind2' => %w(dep4 dep5 dep7)}, Ichiban::Dependencies.graph(GRAPH_FILE))
   end
+  
+  def test_delete_dep
+    skip
+  end
 end

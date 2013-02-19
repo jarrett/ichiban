@@ -119,7 +119,11 @@ module Ichiban
       if deps = Ichiban::Dependencies.graph('.layout_dependencies.json')[layout_name]
         deps.each do |dep|
           # dep is a path relative to the project root
-          Ichiban::HTMLFile.new(dep).update
+          if File.exists?(File.join(Ichiban.project_root, dep))
+            Ichiban::HTMLFile.new(dep).update
+          else
+            Dependencies.delete_dep('.layout_dependencies.json', dep)
+          end
         end
       end
     end

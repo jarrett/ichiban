@@ -1,10 +1,5 @@
 require File.join(File.expand_path(File.dirname(__FILE__)), 'test_helper.rb')
 
-# Some of these tests use mocking to test the watcher in isolation. Others are more like integration
-# tests, allowing the watcher to call the other classes that actually update the project files. The
-# reason for this difference is that I started using mocks later in the project, and there didn't seem
-# to be any compelling reason to waste time changing the old tests.
-
 class TestWatcher < MiniTest::Unit::TestCase
   include CompilationAssertions
   include LoggingAssertions
@@ -218,6 +213,20 @@ class TestWatcher < MiniTest::Unit::TestCase
     end
     assert_reloaded(20) do
       Ichiban::HTMLCompiler::Context.new({}).multiply(3) == 12
+    end
+  end
+  
+  # If a content file is recorded in the dependency graph and gets deleted, Ichiban
+  # should handle it gracefully.
+  def test_layout_update_with_deleted_file
+    run_watcher do
+      # Make sure the file has been compiled and is in our dependency graph.
+      FileUtils.touch File.join(Ichiban.project_root, 'html/html_page.html')
+      # Delete it
+      FileUtils.rm File.join(Ichiban.project_root, 'html/html_page.html')
+      # Update the layout and see if we crash and burn with an error about html_page.html
+      # not existing.
+      FileUtils.touch File.join(Ichiban.project_root, 'layouts/default.html')
     end
   end
 end
