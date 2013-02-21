@@ -3,6 +3,8 @@ module Ichiban
     def self.compile(src)
       require_markdown
       case @strategy
+      when :multimarkdown
+        MultiMarkdown.new(src).to_html
       when :redcarpet
         @redcarpet.render(src)
       when :maruku
@@ -16,7 +18,9 @@ module Ichiban
     
     def self.require_markdown
       unless @markdown_loaded
-        case Ichiban.try_require('redcarpet', 'maruku', 'rdiscount')
+        case Ichiban.try_require('multimarkdown', 'redcarpet', 'maruku', 'rdiscount')
+        when 'multimarkdown'
+          @strategy = :multimarkdown
         when 'redcarpet'
           @redcarpet = Redcarpet::Markdown.new(Redcarpet::Render::XHTML.new)
           @strategy = :redcarpet
@@ -25,7 +29,8 @@ module Ichiban
         when 'rdiscount'
           @strategy = :rdiscount
         else
-          raise "Your Ichiban project contains at least one Markdown file. To process it, you need to install either the redcarpet or maruku gem."
+          raise("Your Ichiban project contains at least one Markdown file. To process it, " +
+                "you need to gem install one of: rpeg-multimarkdown redcarpet maruku rdiscount.")
         end
         @markdown_loaded = true
       end
