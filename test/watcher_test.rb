@@ -85,20 +85,22 @@ class TestWatcher < MiniTest::Unit::TestCase
   
   def test_watched_and_deleted
     src = File.join(Ichiban.project_root, 'html', 'watched_and_deleted.html')
+    dst = File.join(Ichiban.project_root, 'compiled', 'watched_and_deleted.html')
     
-    # Create the source file
-    File.open(src, 'w') do |f|
-      f << '<p>This file should be deleted momentarily.</p>'
-    end
+    # Create the source and destination files
+    [src, dst].each do |path|
+      File.open(path, 'w') do |f|
+        f << '<p>This file should be deleted momentarily.</p>'
+      end
+    end    
     
-    # No need to create the destination file, since we're just mocking the deleter
-    
-    Ichiban::Deleter.expects(:new).returns(deleter = mock('Deleter'))
-    deleter.expects(:delete).with(src)
+    assert File.exists?(dst)
     
     run_watcher do
       FileUtils.rm src
     end
+    
+    assert !File.exists?(dst)
   end
   
   def test_watching_layouts
