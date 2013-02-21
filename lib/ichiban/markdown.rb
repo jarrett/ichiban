@@ -3,6 +3,8 @@ module Ichiban
     def self.compile(src)
       require_markdown
       case @strategy
+      when :kramdown
+        Kramdown::Document.new(src).to_html
       when :multimarkdown
         MultiMarkdown.new(src).to_html
       when :redcarpet
@@ -18,7 +20,9 @@ module Ichiban
     
     def self.require_markdown
       unless @markdown_loaded
-        case Ichiban.try_require('multimarkdown', 'redcarpet', 'maruku', 'rdiscount')
+        case Ichiban.try_require('kramdown', 'multimarkdown', 'redcarpet', 'maruku', 'rdiscount')
+        when 'kramdown'
+          @strategy = :kramdown
         when 'multimarkdown'
           @strategy = :multimarkdown
         when 'redcarpet'
