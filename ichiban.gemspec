@@ -14,6 +14,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'sass'
   s.add_runtime_dependency 'listen'
   s.add_runtime_dependency 'activesupport'
+  s.add_runtime_dependency 'bundler'
   
   s.add_development_dependency 'mocha'
   s.add_development_dependency 'turn'

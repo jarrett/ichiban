@@ -6,11 +6,13 @@ require 'erb' # Just for the helpers
 # Gems
 #require 'active_support/core_ext/class/attribute'
 #require 'active_support/core_ext/object/blank'
+require 'active_support/core_ext/array/extract_options'
 require 'active_support/inflector'
 require 'sass'
 require 'listen'
 require 'erubis'
 require 'rake'
+require 'bundler'
 
 # Ichiban files. Order matters!
 require 'ichiban/config'
