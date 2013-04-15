@@ -18,6 +18,7 @@ module Ichiban
       case @task
       when 'watch'
         Ichiban.project_root = Dir.getwd
+        Ichiban.load_bundle
         Ichiban::Watcher.new.start
       when 'new'
         Ichiban::ProjectGenerator.new(

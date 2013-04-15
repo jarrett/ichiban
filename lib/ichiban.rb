@@ -15,6 +15,7 @@ require 'rake'
 require 'bundler'
 
 # Ichiban files. Order matters!
+require 'ichiban/bundle'
 require 'ichiban/config'
 require 'ichiban/logger'
 require 'ichiban/command'
