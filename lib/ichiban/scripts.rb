@@ -35,8 +35,8 @@ module Ichiban
     # This is how Ichiban knows to re-run the script when one of the files changes. Pass in a path
     # relative to the project root.
     #
-    # However, you don't need to declare dependencies for the templates the script uses. Those will\
-    # automatically be tracked.
+    # However, you don't need to declare dependencies for the files in the html directory that the
+    # script uses. Those will automatically be tracked.
     def depends_on(ind_path)
       if ind_path.start_with?('/')
         raise(ArgumentError, 'depends_on must be passed a path relative to the project root, e.g. "data/employees.xml"')

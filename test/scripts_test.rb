@@ -44,6 +44,18 @@ class TestScripts < MiniTest::Unit::TestCase
     assert_compiled 'ben-franklin.html'
   end
   
+  def test_template_file_changed
+    skip 'this is important and might not be working'
+  end
+  
+  def test_partial_file_changed
+    skip 'this is important and might not be working'
+  end
+  
+  def test_layout_file_changed
+    skip 'this is important and might not be working'
+  end
+  
   def test_script_file_changed
     Ichiban.script_runner.script_file_changed(
       File.join(Ichiban.project_root, 'scripts/generate_employees.rb')
