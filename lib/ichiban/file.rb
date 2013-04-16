@@ -120,7 +120,10 @@ module Ichiban
         deps.each do |dep|
           # dep is a path relative to the project root
           if File.exists?(File.join(Ichiban.project_root, dep))
-            Ichiban::HTMLFile.new(dep).update
+            # Ignore partial templates
+            unless File.basename(dep).start_with?('_')
+              Ichiban::HTMLFile.new(dep).update
+            end
           else
             Dependencies.delete_dep('.layout_dependencies.json', dep)
           end
