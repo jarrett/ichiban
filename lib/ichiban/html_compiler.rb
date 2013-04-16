@@ -25,7 +25,7 @@ module Ichiban
       
       ctx = Ichiban::HTMLCompiler::Context.new(ivars_for_ctx)
       
-      inner_html = Eruby.new(File.read(@html_file.abs)).evaluate(ctx)
+      inner_html = Eruby.new(File.read(@html_file.abs), :filename => @html_file.abs).evaluate(ctx)
       
       # Compile Markdown if necessary
       if (@html_file.abs.end_with?('.markdown') or @html_file.abs.end_with?('.md'))

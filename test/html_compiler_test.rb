@@ -32,4 +32,15 @@ class TestHtmlCompiler < MiniTest::Unit::TestCase
     Ichiban::HTMLCompiler.new(file).compile
     assert_compiled 'nested_layouts.html'
   end
+  
+  def test_exceptions_report_source_file
+    file = Ichiban::HTMLFile.new('html/exception.html')
+    exc = assert_raises(RuntimeError) do
+      Ichiban::HTMLCompiler.new(file).compile
+    end
+    assert(exc.backtrace.any? do |trace|
+      # This is guaranteed to be part of the absolute path we're expecting
+      trace.include?('example/html/exception.html')
+    end)
+  end
 end
