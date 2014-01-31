@@ -15,7 +15,7 @@ class TestProjectGenerator < MiniTest::Unit::TestCase
     Ichiban::ProjectGenerator.new(project_dest).generate
     # Test that each of these files exists:
     %w(
-      Capfile
+      deploy.sh
       html/index.html
       layouts/default.html
       assets/css/screen.scss
