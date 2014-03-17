@@ -19,11 +19,10 @@ module Ichiban
           File.join(Ichiban.project_root, 'helpers'),
           File.join(Ichiban.project_root, 'scripts'),
           File.join(Ichiban.project_root, 'data'),
-          File.join(Ichiban.project_root, 'webserver')
-        )
-        .ignore(/.listen_test$/)
-        .latency(@options[:latency])
-        .change do |modified, added, deleted|
+          File.join(Ichiban.project_root, 'webserver'),
+          ignore: /.listen_test$/,
+          latency: @options[:latency],
+        ) do |modified, added, deleted|
           (modified + added).uniq.each do |path|
             if file = Ichiban::ProjectFile.from_abs(path)
               @loader.change(file) # Tell the Loader that this file has changed
@@ -33,12 +32,12 @@ module Ichiban
                 Ichiban.logger.exception(exc)
               end
             end
-          end                    
+          end
           deleted.each do |path|
             Ichiban::Deleter.new.delete_dest(path)
           end
         end
-        @listener.start(blocking)
+        @listener.start
       rescue Interrupt
         Ichiban.logger.out "Stopping watcher"
         exit 0

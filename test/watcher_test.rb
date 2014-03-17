@@ -19,13 +19,13 @@ class TestWatcher < MiniTest::Unit::TestCase
   # Takes a block. The watcher will be stopped after the block is executed.
   def run_watcher
     watcher = Ichiban::Watcher.new(:latency => 0.01)
-    watcher.start(false) # nonblocking
+    watcher.start # nonblocking
     begin
       # These sleep statements deal with the race condition. There doesn't seem to be any other
       # solution for that.
-      sleep 0.75
+      sleep 1.00
       yield
-      sleep 0.75
+      sleep 1.00
     ensure
       watcher.stop
     end
@@ -35,19 +35,16 @@ class TestWatcher < MiniTest::Unit::TestCase
     # The Listen gem leaks state between tests. To get around this, we copy the example directory
     # into a temporary location.
     copy_example_dir
-
-    # The Listen gem runs the watcher in a thread. So any uncaught exceptions there would normally
-    # just cause the thread to exit, rather than raise an exception in the main thread. This would
-    # make the watcher seemingly inexplicably stop detecting filesystem events. The solution is to
-    # tell Thread to raise an exception in the main thread whenever any other thread raises.
-    @previous_abort_on_exceptions_setting = Thread.abort_on_exception
-    Thread.abort_on_exception = true
+    
+    Celluloid.shutdown
+    Celluloid.boot
   end
   
   def teardown
     FileUtils.rm_rf Ichiban.project_root
     Ichiban.project_root = nil
-    Thread.abort_on_exception = @previous_abort_on_exceptions_setting
+    
+    Celluloid.shutdown
   end
   
   def test_watched_and_changed

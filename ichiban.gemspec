@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name         = 'ichiban'
-  s.version      = '1.0.8'
+  s.version      = '1.0.9'
   s.date         = '2012-11-29'
   s.summary      = 'Ichiban'
   s.description  = 'Static website compiler with advanced feature, including watcher script.'
@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   
   s.add_runtime_dependency 'erubis'
   s.add_runtime_dependency 'sass'
-  s.add_runtime_dependency 'listen'
+  s.add_runtime_dependency 'listen', '>= 2.7.1'
   s.add_runtime_dependency 'activesupport'
   s.add_runtime_dependency 'bundler'
   
