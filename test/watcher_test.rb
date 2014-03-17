@@ -19,7 +19,7 @@ class TestWatcher < MiniTest::Unit::TestCase
   # Takes a block. The watcher will be stopped after the block is executed.
   def run_watcher
     watcher = Ichiban::Watcher.new(:latency => 0.01)
-    watcher.start # nonblocking
+    watcher.start(false) # Execute in thread so as not to block
     begin
       # These sleep statements deal with the race condition. There doesn't seem to be any other
       # solution for that.

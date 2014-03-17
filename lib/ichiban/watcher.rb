@@ -11,33 +11,11 @@ module Ichiban
       
       Ichiban.logger.out 'Starting watcher'
       begin
-        @listener = Listen.to(
-          File.join(Ichiban.project_root, 'html'),
-          File.join(Ichiban.project_root, 'layouts'),
-          File.join(Ichiban.project_root, 'assets'),
-          File.join(Ichiban.project_root, 'models'),
-          File.join(Ichiban.project_root, 'helpers'),
-          File.join(Ichiban.project_root, 'scripts'),
-          File.join(Ichiban.project_root, 'data'),
-          File.join(Ichiban.project_root, 'webserver'),
-          ignore: /.listen_test$/,
-          latency: @options[:latency],
-        ) do |modified, added, deleted|
-          (modified + added).uniq.each do |path|
-            if file = Ichiban::ProjectFile.from_abs(path)
-              @loader.change(file) # Tell the Loader that this file has changed
-              begin
-                file.update
-              rescue => exc
-                Ichiban.logger.exception(exc)
-              end
-            end
-          end
-          deleted.each do |path|
-            Ichiban::Deleter.new.delete_dest(path)
-          end
+        if blocking
+          boot_listen_gem
+        else
+          Thread.new { boot_listen_gem }
         end
-        @listener.start
       rescue Interrupt
         Ichiban.logger.out "Stopping watcher"
         exit 0
@@ -50,6 +28,39 @@ module Ichiban
         @listener.stop
         @listener = nil
       end
+    end
+    
+    private
+    
+    def boot_listen_gem
+      @listener = Listen.to(
+        File.join(Ichiban.project_root, 'html'),
+        File.join(Ichiban.project_root, 'layouts'),
+        File.join(Ichiban.project_root, 'assets'),
+        File.join(Ichiban.project_root, 'models'),
+        File.join(Ichiban.project_root, 'helpers'),
+        File.join(Ichiban.project_root, 'scripts'),
+        File.join(Ichiban.project_root, 'data'),
+        File.join(Ichiban.project_root, 'webserver'),
+        ignore: /.listen_test$/,
+        latency: @options[:latency],
+      ) do |modified, added, deleted|
+        (modified + added).uniq.each do |path|
+          if file = Ichiban::ProjectFile.from_abs(path)
+            @loader.change(file) # Tell the Loader that this file has changed
+            begin
+              file.update
+            rescue => exc
+              Ichiban.logger.exception(exc)
+            end
+          end
+        end
+        deleted.each do |path|
+          Ichiban::Deleter.new.delete_dest(path)
+        end
+      end
+      @listener.start
+      sleep
     end
   end
 end
