@@ -10,7 +10,7 @@ class TestHtmlCompiler < MiniTest::Unit::TestCase
   
   def teardown
     Dir.glob(File.join(Ichiban.project_root, 'compiled', '**/*')).each do |path|
-      FileUtils.rm path
+      FileUtils.rm_rf path
     end
     Ichiban.project_root = nil
   end
@@ -42,5 +42,11 @@ class TestHtmlCompiler < MiniTest::Unit::TestCase
       # This is guaranteed to be part of the absolute path we're expecting
       trace.include?('example/html/exception.html')
     end)
+  end
+  
+  def test_makes_folders_as_needed
+    file = Ichiban::HTMLFile.new('html/subfolder/page_in_subfolder.html')
+    Ichiban::HTMLCompiler.new(file).compile
+    assert_compiled 'subfolder/page_in_subfolder.html'
   end
 end

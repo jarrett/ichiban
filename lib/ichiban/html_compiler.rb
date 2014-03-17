@@ -1,6 +1,7 @@
 module Ichiban
   class HTMLCompiler
     def compile
+      FileUtils.mkdir_p File.dirname(@html_file.dest)
       File.open(@html_file.dest, 'w') do |f|
         f << compile_to_str
       end
