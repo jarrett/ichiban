@@ -9,10 +9,11 @@ require 'erb' # Just for the helpers
 require 'active_support/core_ext/array/extract_options'
 require 'active_support/inflector'
 require 'sass'
-require 'listen'
 require 'erubis'
 require 'rake'
 require 'bundler'
+gem 'listen', '= 0.7.3'
+require 'listen'
 
 # Ichiban files. Order matters!
 require 'ichiban/bundle'
