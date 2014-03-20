@@ -131,6 +131,16 @@ module Ichiban
     end
   end
   
+  class EJSFile < ProjectFile
+    def dest_rel_to_compiled
+      File.join('ejs', File.basename(@rel, '.ejs') + '.js')
+    end
+    
+    def update
+      Ichiban::EJSCompiler.new(self).compile
+    end
+  end
+  
   class CSSFile < ProjectFile
     def dest_rel_to_compiled
       File.join('css', @rel.slice('assets/css/'.length..-1))
@@ -186,14 +196,14 @@ module Ichiban
   
   class ModelFile < ProjectFile
     def update
-      # No-op. The watcher hands the path to each changed model file to the Loader instance.
+      # No-op. The watcher hands the path to every changed file to the Loader instance.
       # So we don't have to worry about that here.
     end
   end
   
   class HelperFile < ProjectFile
     def update
-      # No-op. The watcher hands the path to each changed model file to the Loader instance.
+      # No-op. The watcher hands the path to every changed file to the Loader instance.
       # So we don't have to worry about that here.
     end
   end
@@ -224,6 +234,7 @@ module Ichiban
     end
     register_type(Ichiban::LayoutFile)    { |rel| rel.start_with?('layouts') and rel.end_with?('.html') }
     register_type(Ichiban::JSFile)        { |rel| rel.start_with?('assets/js') }
+    register_type(Ichiban::EJSFile)       { |rel| rel.start_with?('assets/ejs') and rel.end_with?('.ejs') }
     register_type(Ichiban::CSSFile)       { |rel| rel.start_with?('assets/css') and rel.end_with?('.css') }
     register_type(Ichiban::SCSSFile)      { |rel| rel.start_with?('assets/css') and rel.end_with?('.scss') }
     register_type(Ichiban::ImageFile)     { |rel| rel.start_with?('assets/img') }

@@ -165,6 +165,13 @@ class TestWatcher < MiniTest::Unit::TestCase
     assert_compiled 'js/test.js'
   end
   
+  def test_watching_ejs
+    run_watcher do
+      FileUtils.touch File.join(Ichiban.project_root, 'assets/ejs/template.ejs')
+    end
+    assert_compiled 'ejs/template.js'
+  end
+  
   def test_watching_misc
     run_watcher do
       FileUtils.touch File.join(Ichiban.project_root, 'assets/misc/test.txt.gz')

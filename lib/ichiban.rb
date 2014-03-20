@@ -14,6 +14,7 @@ require 'rake'
 require 'bundler'
 gem 'listen', '= 0.7.3'
 require 'listen'
+require 'ejs'
 
 # Ichiban files. Order matters!
 require 'ichiban/bundle'
@@ -30,6 +31,7 @@ require 'ichiban/helpers'
 require 'ichiban/nav_helper'
 require 'ichiban/html_compiler'
 require 'ichiban/asset_compiler'
+require 'ichiban/ejs_compiler'
 require 'ichiban/markdown'
 require 'ichiban/scripts'
 

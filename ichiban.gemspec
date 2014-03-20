@@ -10,6 +10,7 @@ Gem::Specification.new do |s|
   s.executables  = ['ichiban']
   s.homepage     = 'https://github.com/jarrett/ichiban'
   
+  s.add_runtime_dependency 'ejs'
   s.add_runtime_dependency 'erubis'
   s.add_runtime_dependency 'sass'
   s.add_runtime_dependency 'listen', '= 0.7.3'
