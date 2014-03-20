@@ -1,5 +1,7 @@
 module Ichiban
   class ProjectFile
+    @types = []
+    
     attr_reader :abs
     
     # Returns an absolute path in the compiled directory
@@ -12,34 +14,12 @@ module Ichiban
     def self.from_abs(abs)
       rel = abs.slice(Ichiban.project_root.length..-1) # Relative to project root
       rel.sub!(/^\//, '') # Remove leading slash
-      if rel.start_with?('html') and (rel.end_with?('.html') or rel.end_with?('.md') or rel.end_with?('.markdown'))
-        if File.basename(rel).start_with?('_')
-          Ichiban::PartialHTMLFile.new(rel)
-        else
-          Ichiban::HTMLFile.new(rel)
-        end
-      elsif rel.start_with?('layouts') and rel.end_with?('.html')
-        Ichiban::LayoutFile.new(rel)
-      elsif rel.start_with?('assets/js')
-        Ichiban::JSFile.new(rel)
-      elsif rel.start_with?('assets/css') and rel.end_with?('.css')
-        Ichiban::CSSFile.new(rel)
-      elsif rel.start_with?('assets/css') and rel.end_with?('.scss')
-        Ichiban::SCSSFile.new(rel)
-      elsif rel.start_with?('assets/img')
-        Ichiban::ImageFile.new(rel)
-      elsif rel.start_with?('assets/misc')
-        Ichiban::MiscAssetFile.new(rel)
-      elsif rel.start_with?('models')
-        Ichiban::ModelFile.new(rel)
-      elsif rel.start_with?('data')
-        Ichiban::DataFile.new(rel)
-      elsif rel.start_with?('scripts')
-        Ichiban::ScriptFile.new(rel)
-      elsif rel.start_with?('helpers')
-        Ichiban::HelperFile.new(rel)
-      elsif rel == 'webserver/htaccess.txt'
-        Ichiban::HtaccessFile.new(rel)
+      handler = @types.detect do |_, proc|
+        proc.call rel
+      end
+      if handler
+        klass = handler.first
+        klass.new rel
       else
         nil
       end
@@ -52,6 +32,15 @@ module Ichiban
     def initialize(rel)
       @rel = rel
       @abs = File.join(Ichiban.project_root, rel)
+    end
+    
+    # Pass in a subclass of Ichiban::ProjectFile and a block. The block accepts one param:
+    # a file path relative to the Ichiban project root. For example: 'assets/css/main.css'.
+    # Each time the watcher detects a change to a file, the file's path will be passed to
+    # the block. If the block returns true, an instance of klass will be created to compile
+    # the changed file.
+    def self.register_type(klass, &block)
+      @types << [klass, block]
     end
     
     attr_reader :rel
@@ -219,5 +208,30 @@ module Ichiban
     def update
       Ichiban.script_runner.script_file_changed(@abs)
     end
+  end
+  
+  # Re-open this class to register all default file types
+  class ProjectFile
+    register_type(Ichiban::PartialHTMLFile) do |rel|
+      rel.start_with?('html') and
+      (rel.end_with?('.html') or rel.end_with?('.md') or rel.end_with?('.markdown')) and
+      File.basename(rel).start_with?('_')
+    end
+    register_type(Ichiban::HTMLFile) do |rel|
+      rel.start_with?('html') and
+      (rel.end_with?('.html') or rel.end_with?('.md') or rel.end_with?('.markdown')) and
+      !File.basename(rel).start_with?('_')
+    end
+    register_type(Ichiban::LayoutFile)    { |rel| rel.start_with?('layouts') and rel.end_with?('.html') }
+    register_type(Ichiban::JSFile)        { |rel| rel.start_with?('assets/js') }
+    register_type(Ichiban::CSSFile)       { |rel| rel.start_with?('assets/css') and rel.end_with?('.css') }
+    register_type(Ichiban::SCSSFile)      { |rel| rel.start_with?('assets/css') and rel.end_with?('.scss') }
+    register_type(Ichiban::ImageFile)     { |rel| rel.start_with?('assets/img') }
+    register_type(Ichiban::MiscAssetFile) { |rel| rel.start_with?('assets/misc') }
+    register_type(Ichiban::ModelFile)     { |rel| rel.start_with?('models') }
+    register_type(Ichiban::DataFile)      { |rel| rel.start_with?('data') }
+    register_type(Ichiban::ScriptFile)    { |rel| rel.start_with?('scripts') }
+    register_type(Ichiban::HelperFile)    { |rel| rel.start_with?('helpers') }
+    register_type(Ichiban::HtaccessFile)  { |rel| rel == 'webserver/htaccess.txt' }
   end
 end
