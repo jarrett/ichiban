@@ -63,4 +63,8 @@ class TestScripts < MiniTest::Unit::TestCase
     assert_compiled 'thomas-jefferson.html'
     assert_compiled 'george-washington.html'
   end
+  
+  def test_makes_folders_as_needed
+    skip
+  end
 end

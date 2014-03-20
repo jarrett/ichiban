@@ -64,8 +64,10 @@ module Ichiban
         )
       )
       compiler.ivars = {:_current_path => web_path}.merge(ivars)
-      html = compiler.compile_to_str
-      File.open(File.join(Ichiban.project_root, 'compiled', dest_path), 'w') do |f|
+      html = compiler.compile_to_str      
+      abs_dest_path = File.join(Ichiban.project_root, 'compiled', dest_path)
+      FileUtils.mkdir_p File.dirname(abs_dest_path)
+      File.open(abs_dest_path, 'w') do |f|
         f << html
       end
       Ichiban.logger.compilation(
