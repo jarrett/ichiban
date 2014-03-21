@@ -13,7 +13,7 @@ module Ichiban
         EJS.compile(
           File.read(@ejs_file.abs)
         ),
-        File.basename(@ejs_file.dest, '.ejs')
+        File.basename(@ejs_file.dest, '.js')
       )
     end
   
