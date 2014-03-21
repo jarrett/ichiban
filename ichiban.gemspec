@@ -6,7 +6,8 @@ Gem::Specification.new do |s|
   s.description  = 'Static website compiler with advanced feature, including watcher script.'
   s.authors      = ['Jarrett Colby']
   s.email        = 'jarrett@madebyhq.com'
-  s.files        = Dir.glob('lib/**/*') + Dir.glob('empty_project/**/*')
+  # Hidden files must be listed individually.
+  s.files        = Dir.glob('lib/**/*') + Dir.glob('empty_project/**/*') + ['empty_project/compiled/.htaccess']
   s.executables  = ['ichiban']
   s.homepage     = 'https://github.com/jarrett/ichiban'
   

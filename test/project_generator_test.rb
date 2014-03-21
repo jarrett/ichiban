@@ -30,6 +30,7 @@ class TestProjectGenerator < MiniTest::Unit::TestCase
       compiled/css/screen.css
       compiled/js/interaction.js
       compiled/img
+      compiled/.htaccess
     ).each do |dest_file|
       abs = File.join(project_dest, dest_file)
       assert File.exists?(abs), "Expected #{abs} to exist"
