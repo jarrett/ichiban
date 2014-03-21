@@ -9,11 +9,23 @@ module Ichiban
     end
   
     def compile_to_str
-      EJS.compile File.read(@ejs_file.abs)
+      add_preamble(
+        EJS.compile(
+          File.read(@ejs_file.abs)
+        ),
+        File.basename(@ejs_file.dest, '.ejs')
+      )
     end
   
     def initialize(ejs_file)
       @ejs_file = ejs_file
+    end
+    
+    private
+    
+    def add_preamble(fn, name)
+      %Q(if (typeof(window.EJS) == "undefined") { window.EJS = {} } ) +
+      %Q(window.EJS[#{JSON.dump(name)}] = #{fn})
     end
   end
 end
