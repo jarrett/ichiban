@@ -83,7 +83,7 @@ class TestWatcher < MiniTest::Unit::TestCase
     end
   end
   
-  def test_watched_and_deleted
+  def test_watched_and_deleted_file
     src = File.join(Ichiban.project_root, 'html', 'watched_and_deleted.html')
     dst = File.join(Ichiban.project_root, 'compiled', 'watched_and_deleted.html')
     
@@ -101,6 +101,10 @@ class TestWatcher < MiniTest::Unit::TestCase
     end
     
     assert !File.exists?(dst)
+  end
+  
+  def test_watched_and_deleted_folder
+    skip
   end
   
   def test_watching_layouts

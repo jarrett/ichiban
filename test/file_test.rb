@@ -12,4 +12,18 @@ class TestFile < MiniTest::Unit::TestCase
     File.stubs(:exists?).returns(true)
     Ichiban::LayoutFile.new('layouts/default.html').update
   end
+  
+  # Bug fix: The HTMLFile class used to include only the filename, not the folders,
+  # in the return value of #web_path.
+  def test_html_file_knows_correct_web_path
+    Ichiban.stubs(:project_root).returns('/dev/null')
+    
+    file = Ichiban::HTMLFile.new 'html/foo/bar/baz.html'
+    assert_equal '/foo/bar/baz/', file.web_path
+    
+    file = Ichiban::HTMLFile.new 'html/foo/bar/index.html'
+    assert_equal '/foo/bar/', file.web_path
+    
+    Ichiban.project_root = nil
+  end
 end

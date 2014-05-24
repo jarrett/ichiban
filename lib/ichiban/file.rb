@@ -63,7 +63,13 @@ module Ichiban
     
     def web_path
       d = dest_rel_to_compiled
-      '/' + File.basename(d, File.extname(d)) + '/'
+      fname = File.basename(d, File.extname(d))
+      if fname == 'index'
+        # If this is an index file, the web path is just the folder name.
+        '/' + File.dirname(d) + '/'
+      else
+        '/' + File.join(File.dirname(d), fname) + '/'
+      end
     end
   end
   
