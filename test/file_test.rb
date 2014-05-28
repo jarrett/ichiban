@@ -15,6 +15,8 @@ class TestFile < MiniTest::Unit::TestCase
   
   # Bug fix: The HTMLFile class used to include only the filename, not the folders,
   # in the return value of #web_path.
+  # 
+  # Another bug: It used to put '/./' a the beginning of paths in the root folder.
   def test_html_file_knows_correct_web_path
     Ichiban.stubs(:project_root).returns('/dev/null')
     
@@ -23,6 +25,9 @@ class TestFile < MiniTest::Unit::TestCase
     
     file = Ichiban::HTMLFile.new 'html/foo/bar/index.html'
     assert_equal '/foo/bar/', file.web_path
+    
+    file = Ichiban::HTMLFile.new 'html/baz.html'
+    assert_equal '/baz/', file.web_path
     
     Ichiban.project_root = nil
   end

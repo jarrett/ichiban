@@ -68,7 +68,9 @@ module Ichiban
         # If this is an index file, the web path is just the folder name.
         '/' + File.dirname(d) + '/'
       else
-        '/' + File.join(File.dirname(d), fname) + '/'
+        p = '/' + File.join(File.dirname(d), fname) + '/'
+        p.sub!('/./', '/') if p.start_with?('/./')
+        p
       end
     end
   end
