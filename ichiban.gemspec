@@ -3,7 +3,7 @@ Gem::Specification.new do |s|
   s.version      = '1.0.13'
   s.date         = '2012-11-29'
   s.summary      = 'Ichiban'
-  s.description  = 'Static website compiler with advanced feature, including watcher script.'
+  s.description  = 'Static website compiler with advanced features, including watcher script.'
   s.authors      = ['Jarrett Colby']
   s.email        = 'jarrett@madebyhq.com'
   # Hidden files must be listed individually.
