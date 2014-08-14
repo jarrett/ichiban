@@ -1,54 +1,50 @@
 module Ichiban
-  module Dependencies
-    @graphs = {}
-    
-    # Does not delete the files. Just clears the graphs from memory. This gets called whenever
-    # Ichiban.project_root is changed.
-    def self.clear_graphs
-      @graphs = {}
-    end
-    
-    def self.delete_dep(graph_file_path, dep)
-      ensure_graph_initialized(graph_file_path)
-      graph = @graphs[graph_file_path]
-      graph.each do |ind, deps|
-        deps.delete dep
-      end
-      save_graph_file(graph_file_path, graph)
-    end
-    
-    # graph_file_path is a relative path
-    def self.graph(graph_file_path)
-      ensure_graph_initialized(graph_file_path)
-      @graphs[graph_file_path]
-    end
-    
-    # graph_file_path is a relative path
-    def self.ensure_graph_initialized(graph_file_path)
-      unless @graphs[graph_file_path]
-        abs = File.join(Ichiban.project_root, graph_file_path)
-        if File.exists?(abs)
-          @graphs[graph_file_path] = JSON.parse(File.read(abs))
+  module Dependencies   
+    def self.files_depending_on(path)
+      rel = path.slice(Ichiban.project_root.length..-1)
+      if deps = Ichiban.config.dependencies[rel]
+        case deps
+        when String
+          paths = Dir.glob(File.join(Ichiban.project_root, deps))
+        when Array
+          paths = deps.map do |dep|
+            case dep
+            when String
+              Dir.glob(File.join(Ichiban.project_root, deps))
+            when Proc
+              files_from_proc(dep)
+            else
+              raise("Expected String or Proc, but was: #{files.inspect}")
+            end
+          end.flatten
+        when Proc
+          paths = [files_from_proc(deps)].flatten
         else
-          @graphs[graph_file_path] = {}
+          raise("Expected String, Array, or Proc, but was: #{files.inspect}")
         end
+        paths.map do |path|
+          Ichiban::ProjectFile.from_abs(File.join(Ichiban.project_root, path))
+        end
+      else
+        []
       end
     end
     
-    def self.save_graph_file(graph_file_path, graph)
-      File.open(File.join(Ichiban.project_root, graph_file_path), 'w') do |f|
-        f << JSON.generate(graph)
+    def self.files_from_proc(proc)
+      files = proc.call
+      if !files.is_a?(String) and !files.is_a?(Array)
+        raise("Expected Proc to return String or Array, but was: #{files.inspect}"
       end
+      if files.is_a?(Array) and !files.all? { |f| f.is_a?(String) }
+        raise("Proc returned Array, but not all elements were Strings: #{files.inspect}")
+      end
+      files
     end
     
-    # Loads the graph from disk if it's not already in memory. Updates the graph. Writes the new
-    # graph to disk. graph_file_path is a relative path.
-    def self.update(graph_file_path, ind, dep)
-      ensure_graph_initialized(graph_file_path)
-      graph = @graphs[graph_file_path]
-      graph[ind] ||= []
-      graph[ind] << dep unless graph[ind].include?(dep)
-      save_graph_file(graph_file_path, graph)
+    def self.propagate(path)
+      files_depending_on(path).each do |project_file|
+        project_file.update
+      end
     end
   end
 end

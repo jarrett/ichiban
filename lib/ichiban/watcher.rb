@@ -37,6 +37,12 @@ module Ichiban
           deleted.each do |path|
             Ichiban::Deleter.new.delete_dest(path)
           end
+          (modified + added + deleted).uniq.each do |path|
+            begin
+              Ichiban::Dependencies.propagate(path)
+            rescue => exc
+              Ichiban.logger.exception(exc)
+            end
         end
         @listener.start(blocking)
       rescue Interrupt

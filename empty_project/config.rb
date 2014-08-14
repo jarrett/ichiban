@@ -1,3 +1,6 @@
-Ichiban.config do |config|
-  config.relative_url_root = '/'
+Ichiban.config do |cfg|
+  cfg.relative_url_root = '/'
+  cfg.dependencies = {
+    'layouts/default.html' -> '*'
+  }
 end
