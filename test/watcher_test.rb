@@ -21,11 +21,29 @@ class TestWatcher < MiniTest::Unit::TestCase
     watcher = Ichiban::Watcher.new(:latency => 0.01)
     watcher.start
     begin
-      # These sleep statements deal with the race condition. There doesn't seem to be any other
-      # solution for that.
-      sleep 1
+      # Listen takes an unknown amount of time to boot. We need to poll the watcher,
+      # touching a file and waiting for the watcher to see the change.
+      while watcher.listen_event_log.empty?
+        assert watcher.listener.processing?, "Expected watcher to be running"
+        sleep 0.01
+        FileUtils.touch File.join(Ichiban.project_root, 'listen_tmo.txt')
+      end
+      watcher.listen_event_log.clear
+      
       yield
-      sleep 1
+      
+      # Listen is multithreaded, so race conditions are possible. We need to poll the
+      # watcher, waiting for it to detect a change. Once it has, we can run our
+      # assertions.
+      wait_count = 0
+      while watcher.listen_event_log.empty? and wait_count <= 250
+        assert watcher.listener.processing?, "Expected watcher to be running"
+        sleep 0.01
+        wait_count += 1
+        if wait_count == 250
+          flunk 'Waited 2.5 seconds, but watcher never recorded an event.'
+        end
+      end
     ensure
       watcher.stop
     end

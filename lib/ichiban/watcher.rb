@@ -1,10 +1,15 @@
 module Ichiban
-  class Watcher        
+  class Watcher
     def initialize(options = {})
       @options = {
         :latency => 0.5
       }.merge(options)
+      @listen_event_log = []
     end
+    
+    attr_reader :listener
+    
+    attr_reader :listen_event_log
     
     def start
       @loader = Ichiban::Loader.new
@@ -12,17 +17,11 @@ module Ichiban
       Ichiban.logger.out 'Starting watcher'
       begin
         @listener = Listen.to(
-          File.join(Ichiban.project_root, 'html'),
-          File.join(Ichiban.project_root, 'layouts'),
-          File.join(Ichiban.project_root, 'assets'),
-          File.join(Ichiban.project_root, 'models'),
-          File.join(Ichiban.project_root, 'helpers'),
-          File.join(Ichiban.project_root, 'scripts'),
-          File.join(Ichiban.project_root, 'data'),
-          File.join(Ichiban.project_root, 'webserver'),
+          Ichiban.project_root,
           ignore: /.listen_test$/,
           latency: @options[:latency]
         ) do |modified, added, deleted|
+          @listen_event_log << [modified, added, deleted]
           (modified + added).uniq.each do |path|
             if file = Ichiban::ProjectFile.from_abs(path)
               @loader.change(file) # Tell the Loader that this file has changed
