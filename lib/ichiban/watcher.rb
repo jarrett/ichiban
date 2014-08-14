@@ -46,7 +46,7 @@ module Ichiban
         end
         @listener.start
       rescue Interrupt
-        Ichiban.logger.out "Stopping watcher"
+        stop
         exit 0
       end
     end
