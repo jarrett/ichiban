@@ -83,8 +83,6 @@ module Ichiban
       file = Ichiban::PartialHTMLFile.new(
         File.join('html', path)
       )
-      # Record the dependency like this: 'folder/partial-name' => 'folder/included-file.html'
-      Ichiban::Dependencies.update('.partial_dependencies.json', file.partial_name, @_template_path)
       compiler = Ichiban::HTMLCompiler.new(file)
       compiler.ivars = to_hash # to_hash is inherited from Erubis::Context. It's a hash of the instance variables.
       compiler.compile_to_str
