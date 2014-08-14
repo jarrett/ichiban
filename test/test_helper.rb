@@ -12,26 +12,8 @@ module ExampleDirectory
     dir_suffix = rand(10**30)
     new_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', "example-#{dir_suffix}"))
     FileUtils.cp_r(File.expand_path(File.join(File.dirname(__FILE__), '..', 'example')), new_dir)
+    puts new_dir.inspect
     Ichiban.project_root = new_dir
-  end
-  
-  # Add and commit everything
-  def git_commit_all
-    repo = Grit::Repo.new(Ichiban.project_root)
-    repo.add(
-      repo.status.collect { |f| f.path }
-    )
-    repo.commit_all('Commit all')
-  end
-  
-  # Returns a Grit::Repo
-  def git_init(options = {})
-    options = {:commit_all => true}.merge(options)
-    repo = Grit::Repo.init Ichiban.project_root
-    if options[:commit_all]
-      
-    end
-    repo
   end
 end
 

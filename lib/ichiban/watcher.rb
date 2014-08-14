@@ -43,6 +43,7 @@ module Ichiban
             rescue => exc
               Ichiban.logger.exception(exc)
             end
+          end
         end
         @listener.start(blocking)
       rescue Interrupt
