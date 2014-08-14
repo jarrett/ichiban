@@ -5,10 +5,12 @@ class TestPartialHTMLFile < MiniTest::Unit::TestCase
   include ExampleDirectory
   
   def setup
+    super
     copy_example_dir
   end
   
   def teardown
+    super
     FileUtils.rm_rf Ichiban.project_root
     Ichiban.project_root = nil
   end

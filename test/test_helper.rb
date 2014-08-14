@@ -7,12 +7,23 @@ $:.unshift(File.join(File.expand_path(File.dirname(__FILE__)), '../lib'))
 
 require 'ichiban'
 
+class MiniTest::Unit::TestCase
+  def setup
+    # Don't log to STDOUT when running tests.
+    @original_logger_out = Ichiban.logger.out
+    Ichiban.logger.out = StringIO.new
+  end
+  
+  def teardown
+    Ichiban.logger.out = @original_logger_out
+  end
+end
+
 module ExampleDirectory
   def copy_example_dir
     dir_suffix = rand(10**30)
     new_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', "example-#{dir_suffix}"))
     FileUtils.cp_r(File.expand_path(File.join(File.dirname(__FILE__), '..', 'example')), new_dir)
-    puts new_dir.inspect
     Ichiban.project_root = new_dir
   end
 end

@@ -4,10 +4,12 @@ class TestAssetCompiler < MiniTest::Unit::TestCase
   include CompilationAssertions
   
   def setup
+    super
     Ichiban.project_root = File.expand_path(File.join(File.dirname(__FILE__), '..', 'example'))
   end
   
   def teardown
+    super
     Dir.glob(File.join(Ichiban.project_root, 'compiled', '**/*')).each do |path|
       FileUtils.rm_rf path
     end

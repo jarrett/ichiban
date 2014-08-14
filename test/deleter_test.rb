@@ -4,10 +4,12 @@ class TestDeleter < MiniTest::Unit::TestCase
   include ExampleDirectory
   
   def setup
+    super
     Ichiban.project_root = File.expand_path(File.join(File.dirname(__FILE__), '..', 'example'))
   end
   
   def teardown
+    super
     Ichiban.project_root = nil
   end
   
