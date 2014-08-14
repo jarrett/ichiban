@@ -5,12 +5,14 @@ class TestScripts < MiniTest::Unit::TestCase
   include ExampleDirectory
   
   def setup
+    super
     # There's a good chance of state leakage related to the dependency graph files.
     # To get around this, we copy the example directory into a temporary location.
     copy_example_dir
   end
   
   def teardown
+    super
     FileUtils.rm_rf Ichiban.project_root
     Ichiban.project_root = nil
   end

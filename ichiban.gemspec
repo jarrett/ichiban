@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'ejs'
   s.add_runtime_dependency 'erubis'
   s.add_runtime_dependency 'sass'
-  s.add_runtime_dependency 'listen', '= 0.7.3'
+  s.add_runtime_dependency 'listen', '>= 2.7.9'
   s.add_runtime_dependency 'activesupport'
   s.add_runtime_dependency 'bundler'
   

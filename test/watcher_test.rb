@@ -19,7 +19,7 @@ class TestWatcher < MiniTest::Unit::TestCase
   # Takes a block. The watcher will be stopped after the block is executed.
   def run_watcher
     watcher = Ichiban::Watcher.new(:latency => 0.01)
-    watcher.start(false) # nonblocking
+    watcher.start
     begin
       # These sleep statements deal with the race condition. There doesn't seem to be any other
       # solution for that.
@@ -32,6 +32,8 @@ class TestWatcher < MiniTest::Unit::TestCase
   end
   
   def setup
+    super
+    
     # The Listen gem leaks state between tests. To get around this, we copy the example directory
     # into a temporary location.
     copy_example_dir
@@ -45,6 +47,7 @@ class TestWatcher < MiniTest::Unit::TestCase
   end
   
   def teardown
+    super
     FileUtils.rm_rf Ichiban.project_root
     Ichiban.project_root = nil
     Thread.abort_on_exception = @previous_abort_on_exceptions_setting

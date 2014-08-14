@@ -10,11 +10,13 @@ class TestHelpers < MiniTest::Unit::TestCase
   end
   
   def setup
+    super
     # This will also cause the config file to reload
     Ichiban.project_root = File.expand_path(File.join(File.dirname(__FILE__), '..', 'example'))
   end
   
   def teardown
+    super
     @_current_path = nil
     Ichiban.project_root = nil    
   end

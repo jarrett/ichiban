@@ -10,10 +10,12 @@ class TestNavHelper < MiniTest::Unit::TestCase
   end
   
   def setup
+    super
     Ichiban.project_root = File.expand_path(File.join(File.dirname(__FILE__), '..', 'example'))
   end
   
   def teardown
+    super
     @_current_path = nil
     Ichiban.project_root = nil
   end

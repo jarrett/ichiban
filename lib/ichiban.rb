@@ -12,7 +12,6 @@ require 'sass'
 require 'erubis'
 require 'rake'
 require 'bundler'
-gem 'listen', '= 0.7.3'
 require 'listen'
 require 'ejs'
 
