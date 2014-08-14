@@ -33,7 +33,7 @@ module Ichiban
     def self.files_from_proc(proc)
       files = proc.call
       if !files.is_a?(String) and !files.is_a?(Array)
-        raise("Expected Proc to return String or Array, but was: #{files.inspect}"
+        raise("Expected Proc to return String or Array, but was: #{files.inspect}")
       end
       if files.is_a?(Array) and !files.all? { |f| f.is_a?(String) }
         raise("Proc returned Array, but not all elements were Strings: #{files.inspect}")
