@@ -85,24 +85,7 @@ module Ichiban
     end
     
     def update
-      # Normal HTML files that depend on this partial
-      if deps = Ichiban::Dependencies.graph('.partial_dependencies.json')[partial_name]
-        deps.each do |dep|
-          # dep will be a path relative to the html directory. It looks like this: 'folder/file.html'
-          Ichiban::HTMLFile.new(File.join('html', dep)).update
-        end
-      end
-      
-      # Scripts that depend on this partial
-      dep_key = "html/#{partial_name}.html"
-      if deps = Ichiban::Dependencies.graph('.script_dependencies.json')[dep_key]
-        deps.each do |dep|
-          # dep will be a path relative to the html directory. It looks like this: 'folder/file.html'
-          script_path = File.join(Ichiban.project_root, dep)
-          Ichiban.logger.script_run(@abs, script_path)
-          script = Ichiban::Script.new(script_path).run
-        end
-      end
+      # no-op
     end
   end
   
@@ -112,20 +95,7 @@ module Ichiban
     end
     
     def update
-      Ichiban.logger.layout(@abs)
-      if deps = Ichiban::Dependencies.graph('.layout_dependencies.json')[layout_name]
-        deps.each do |dep|
-          # dep is a path relative to the project root
-          if File.exists?(File.join(Ichiban.project_root, dep))
-            # Ignore partial templates
-            unless File.basename(dep).start_with?('_')
-              Ichiban::HTMLFile.new(dep).update
-            end
-          else
-            Dependencies.delete_dep('.layout_dependencies.json', dep)
-          end
-        end
-      end
+      # no-op
     end
   end
   
@@ -218,7 +188,7 @@ module Ichiban
   
   class DataFile < ProjectFile
     def update
-      Ichiban.script_runner.data_file_changed(@abs)
+      #no-op
     end
   end
   
