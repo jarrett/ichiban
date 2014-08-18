@@ -16,6 +16,24 @@ class TestWatcher < MiniTest::Unit::TestCase
     flunk "Expected the code to be reloaded and the block to return true within #{max_attempts} attempts"
   end
   
+  def mock_watcher_add(path)
+    watcher = Ichiban::Watcher.new
+    watcher.on_change([], [path], [])
+    watcher
+  end
+  
+  def mock_watcher_mod(path)
+    watcher = Ichiban::Watcher.new
+    watcher.on_change([path], [], [])
+    watcher
+  end
+  
+  def mock_watcher_del(path)
+    watcher = Ichiban::Watcher.new
+    watcher.on_change([], [], [path])
+    watcher
+  end
+  
   # Takes a block. The watcher will be stopped after the block is executed.
   def run_watcher
     watcher = Ichiban::Watcher.new(:latency => 0.01)
@@ -73,54 +91,31 @@ class TestWatcher < MiniTest::Unit::TestCase
   
   def test_watched_and_changed
     src = File.join(Ichiban.project_root, 'html', 'watched_and_changed.html')
-    dst = File.join(Ichiban.project_root, 'compiled', 'watched_and_changed.html')
-    
-    # Initial version of file
     File.open(src, 'w') do |f|
-      f << '<p>This is the old text.</p>'
+      f << '<p>This is the new text.</p>'
     end
-    
-    # Change the file
-    run_watcher do
-      File.open(src, 'w') do |f|
-        f << '<p>This is the new text.</p>'
-      end
-    end
-    
+    mock_watcher_mod src
     assert_compiled 'watched_and_changed.html'
   end
   
   def test_watched_and_create
     src = File.join(Ichiban.project_root, 'html', 'watched_and_created.html')
-    begin
-      run_watcher do
-        File.open(src, 'w') do |f|
-          f << '<p>This file was just created.</p>'
-        end
-      end
-      assert_compiled 'watched_and_created.html'
-    ensure
-      FileUtils.rm src
+    File.open(src, 'w') do |f|
+      f << '<p>This file was just created.</p>'
     end
+    assert_compiled 'watched_and_created.html'
   end
   
   def test_watched_and_deleted_file
     src = File.join(Ichiban.project_root, 'html', 'watched_and_deleted.html')
     dst = File.join(Ichiban.project_root, 'compiled', 'watched_and_deleted.html')
-    
-    # Create the source and destination files
     [src, dst].each do |path|
       File.open(path, 'w') do |f|
         f << '<p>This file should be deleted momentarily.</p>'
       end
     end    
-    
     assert File.exists?(dst)
-    
-    run_watcher do
-      FileUtils.rm src
-    end
-    
+    mock_watcher_del src
     assert !File.exists?(dst)
   end
   
@@ -129,22 +124,21 @@ class TestWatcher < MiniTest::Unit::TestCase
   end
   
   def test_watching_layouts
-    # First, make sure the old version of the file exists, and that our dependency graph has
-    # connected it to the layout.
+    # First, make sure the old version of the file exists.
     Ichiban::HTMLFile.new('html/changed_layout.html').update
     assert(
       File.exists?(File.join(Ichiban.project_root, 'compiled/changed_layout.html')),
       "Expected #{File.join(Ichiban.project_root, 'compiled/changed_layout.html')} to exist"
     )
     
-    # Now update the layout
+    # Now update the layout.
     layout_path = File.join(Ichiban.project_root, 'layouts/default.html')
     old_layout_code = File.read(layout_path)
-    run_watcher do
-      File.open(layout_path, 'w') do |f|
-        f << old_layout_code.sub(/<h1>.*<\/h1>/, '<h1>The New Header</h1>')
-      end
+    File.open(layout_path, 'w') do |f|
+      f << old_layout_code.sub(/<h1>.*<\/h1>/, '<h1>The New Header</h1>')
     end
+    mock_watcher_mod layout_path
+    
     assert_compiled 'changed_layout.html'
   end
   
@@ -158,109 +152,85 @@ class TestWatcher < MiniTest::Unit::TestCase
   end
   
   def test_watching_markdown
-    run_watcher do
-      FileUtils.touch File.join(Ichiban.project_root, 'html/markdown_page.md')
-    end
+    src = File.join(Ichiban.project_root, 'html/markdown_page.md')
+    mock_watcher_mod src
     assert_compiled 'markdown_page.html'
-    
-    run_watcher do
-      FileUtils.touch File.join(Ichiban.project_root, 'html/markdown_page_2.markdown')
-    end
+    src = File.join(Ichiban.project_root, 'html/markdown_page_2.markdown')
+    mock_watcher_mod src
     assert_compiled 'markdown_page_2.html'
   end
   
   def test_watching_img
-    run_watcher do
-      FileUtils.touch File.join(Ichiban.project_root, 'assets/img/test.png')
-    end
+    src = File.join(Ichiban.project_root, 'assets/img/test.png')
+    mock_watcher_mod src
     assert_compiled 'img/test.png'
   end
   
   def test_watching_scss
-    run_watcher do
-      FileUtils.touch File.join(Ichiban.project_root, 'assets/css/screen.scss')
-    end
+    src = File.join(Ichiban.project_root, 'assets/css/screen.scss')
+    mock_watcher_mod src
     assert_compiled 'css/screen.css'
   end
   
   def test_watching_js
-    run_watcher do
-      FileUtils.touch File.join(Ichiban.project_root, 'assets/js/test.js')
-    end
+    src = File.join(Ichiban.project_root, 'assets/js/test.js')
+    mock_watcher_mod src
     assert_compiled 'js/test.js'
   end
   
   def test_watching_ejs
-    run_watcher do
-      FileUtils.touch File.join(Ichiban.project_root, 'assets/ejs/template.ejs')
-    end
+    src = File.join(Ichiban.project_root, 'assets/ejs/template.ejs')
+    mock_watcher_mod src
     assert_compiled 'ejs/template.js'
   end
   
   def test_watching_misc
-    run_watcher do
-      FileUtils.touch File.join(Ichiban.project_root, 'assets/misc/test.txt.gz')
-    end
+    src = File.join(Ichiban.project_root, 'assets/misc/test.txt.gz')
+    mock_watcher_mod src
     assert_compiled 'test.txt.gz'
   end
   
   def test_watching_htaccess
     FileUtils.rm File.join(Ichiban.project_root, 'compiled/.htaccess')
-    run_watcher do
-      FileUtils.touch File.join(Ichiban.project_root, 'webserver/htaccess.txt')
-    end
+    src = File.join(Ichiban.project_root, 'webserver/htaccess.txt')
+    mock_watcher_mod src
     assert_compiled '.htaccess'
   end
   
   def test_reload_model
     model_path = File.join(Ichiban.project_root, 'models', 'test_model.rb')
-    run_watcher do
-      assert_equal 6, TestModel.new.multiply(3)
-      File.open(model_path, 'w') do |f|
-        f << %(
-          class TestModel
-            def multiply(num)
-              num * 4
-            end
+    
+    assert_equal 6, TestModel.new.multiply(3)
+    File.open(model_path, 'w') do |f|
+      f << %(
+        class TestModel
+          def multiply(num)
+            num * 4
           end
-        )
-      end
-      assert_reloaded(20) do
-        TestModel.new.multiply(3) == 12
-      end
+        end
+      )
+    end
+    mock_watcher_mod model_path
+    assert_reloaded(20) do
+      TestModel.new.multiply(3) == 12
     end
   end
   
   def test_helper_reload
     helper_path = File.join(Ichiban.project_root, 'helpers', 'my_helper.rb')
-    run_watcher do
-      assert_equal 6, Ichiban::HTMLCompiler::Context.new({}).multiply(3)
-      File.open(helper_path, 'w') do |f|
-        f << %(
-          module MyHelper
-            def multiply(num)
-              num * 4
-            end
+    assert_equal 6, Ichiban::HTMLCompiler::Context.new({}).multiply(3)
+    File.open(helper_path, 'w') do |f|
+      f << %(
+        module MyHelper
+          def multiply(num)
+            num * 4
           end
-        )
-      end
+        end
+      )
     end
+    mock_watcher_mod helper_path
     assert_reloaded(20) do
       Ichiban::HTMLCompiler::Context.new({}).multiply(3) == 12
-    end
-  end
-  
-  # If a content file is recorded in the dependency graph and gets deleted, Ichiban
-  # should handle it gracefully.
-  def test_layout_update_with_deleted_file
-    run_watcher do
-      # Make sure the file has been compiled and is in our dependency graph.
-      FileUtils.touch File.join(Ichiban.project_root, 'html/html_page.html')
-      # Delete it
-      FileUtils.rm File.join(Ichiban.project_root, 'html/html_page.html')
-      # Update the layout and see if we crash and burn with an error about html_page.html
-      # not existing.
-      FileUtils.touch File.join(Ichiban.project_root, 'layouts/default.html')
     end
   end
 end
