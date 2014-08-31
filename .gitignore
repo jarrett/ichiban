@@ -1,6 +1,7 @@
 #********** Ichiban stuff**********
 .layout_dependencies.json
 .sass-cache
+example-*
 
 #********** OSX template********** 
 
