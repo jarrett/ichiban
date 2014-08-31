@@ -1,7 +1,10 @@
-require 'minitest/unit'
-require 'turn/autorun'
-require 'mocha/setup'
+require 'minitest'
+require 'minitest/autorun'
+require 'minitest/reporters'
+require 'mocha/mini_test'
 require 'lorax'
+
+Minitest::Reporters.use! Minitest::Reporters::DefaultReporter.new
 
 $:.unshift(File.join(File.expand_path(File.dirname(__FILE__)), '../lib'))
 
