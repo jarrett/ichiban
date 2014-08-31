@@ -45,6 +45,7 @@ GEM
       metaclass (~> 0.0.1)
     nokogiri (1.6.3.1)
       mini_portile (= 0.6.0)
+    rake (10.3.2)
     rb-fsevent (0.9.4)
     rb-inotify (0.9.5)
       ffi (>= 0.5.0)
@@ -64,3 +65,4 @@ DEPENDENCIES
   minitest (~> 5, >= 5.4.1)
   minitest-reporters (~> 1, >= 1.0.5)
   mocha (~> 1, >= 1.1.0)
+  rake (~> 10, >= 10.3.2)
