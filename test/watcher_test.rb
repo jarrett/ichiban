@@ -16,22 +16,26 @@ class TestWatcher < MiniTest::Unit::TestCase
     flunk "Expected the code to be reloaded and the block to return true within #{max_attempts} attempts"
   end
   
+  def init_watcher
+    @watcher ||= Ichiban::Watcher.new
+  end
+  
   def mock_watcher_add(path)
-    watcher = Ichiban::Watcher.new
-    watcher.on_change([], [path], [])
-    watcher
+    @watcher ||= Ichiban::Watcher.new
+    @watcher.on_change([], [path], [])
+    @watcher
   end
   
   def mock_watcher_mod(path)
-    watcher = Ichiban::Watcher.new
-    watcher.on_change([path], [], [])
-    watcher
+    @watcher ||= Ichiban::Watcher.new
+    @watcher.on_change([path], [], [])
+    @watcher
   end
   
   def mock_watcher_del(path)
-    watcher = Ichiban::Watcher.new
-    watcher.on_change([], [], [path])
-    watcher
+    @watcher ||= Ichiban::Watcher.new
+    @watcher.on_change([], [], [path])
+    @watcher
   end
   
   # Takes a block. The watcher will be stopped after the block is executed.
@@ -198,6 +202,8 @@ class TestWatcher < MiniTest::Unit::TestCase
   end
   
   def test_reload_model
+    init_watcher
+    
     model_path = File.join(Ichiban.project_root, 'models', 'test_model.rb')
     
     assert_equal 6, TestModel.new.multiply(3)
