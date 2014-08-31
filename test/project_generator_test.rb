@@ -1,6 +1,6 @@
 require File.join(File.expand_path(File.dirname(__FILE__)), 'test_helper.rb')
 
-class TestProjectGenerator < MiniTest::Unit::TestCase
+class TestProjectGenerator < Minitest::Test
   def project_dest
     File.expand_path(File.join(File.dirname(__FILE__), '../tmp_project'))
   end

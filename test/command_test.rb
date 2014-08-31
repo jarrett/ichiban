@@ -1,7 +1,7 @@
 require File.join(File.expand_path(File.dirname(__FILE__)), 'test_helper.rb')
 
 # No need to do an end-to-end test here. Just mock the classes that Ichiban::Command calls.
-class TestCommand < MiniTest::Unit::TestCase
+class TestCommand < Minitest::Test
   def test_new_command
     dest = File.expand_path 'my_site'
     mock_generator = mock('project generator')

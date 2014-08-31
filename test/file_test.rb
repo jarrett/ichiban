@@ -1,6 +1,6 @@
 require File.join(File.expand_path(File.dirname(__FILE__)), 'test_helper.rb')
 
-class TestFile < MiniTest::Unit::TestCase
+class TestFile < Minitest::Test
   # Bug fix: The LayoutFile class used to try to render partial templates as individual
   # pages, which resulted in exceptions.
   def test_layout_update_ignores_partial_templates

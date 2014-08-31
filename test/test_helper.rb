@@ -10,7 +10,7 @@ $:.unshift(File.join(File.expand_path(File.dirname(__FILE__)), '../lib'))
 
 require 'ichiban'
 
-class MiniTest::Unit::TestCase
+class Minitest::Test
   def setup
     # Don't log to STDOUT when running tests.
     @original_logger_out = Ichiban.logger.out

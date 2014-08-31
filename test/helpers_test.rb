@@ -1,6 +1,6 @@
 require File.join(File.expand_path(File.dirname(__FILE__)), 'test_helper.rb')
 
-class TestHelpers < MiniTest::Unit::TestCase
+class TestHelpers < Minitest::Test
   include HTMLAssertions
   
   # Takes a block

@@ -1,6 +1,6 @@
 require File.join(File.expand_path(File.dirname(__FILE__)), 'test_helper.rb')
 
-class TestScripts < MiniTest::Unit::TestCase
+class TestScripts < Minitest::Test
   include CompilationAssertions
   include ExampleDirectory
   

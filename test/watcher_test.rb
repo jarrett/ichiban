@@ -1,9 +1,31 @@
 require File.join(File.expand_path(File.dirname(__FILE__)), 'test_helper.rb')
 
-class TestWatcher < MiniTest::Unit::TestCase
+class WatcherTest < Minitest::Test
   include CompilationAssertions
   include LoggingAssertions
   include ExampleDirectory
+  
+  def setup
+    super
+    
+    # The Listen gem leaks state between tests. To get around this, we copy the example directory
+    # into a temporary location.
+    copy_example_dir
+
+    # The Listen gem runs the watcher in a thread. So any uncaught exceptions there would normally
+    # just cause the thread to exit, rather than raise an exception in the main thread. This would
+    # make the watcher seemingly inexplicably stop detecting filesystem events. The solution is to
+    # tell Thread to raise an exception in the main thread whenever any other thread raises.
+    @previous_abort_on_exceptions_setting = Thread.abort_on_exception
+    Thread.abort_on_exception = true
+  end
+  
+  def teardown
+    super
+    FileUtils.rm_rf Ichiban.project_root
+    Ichiban.project_root = nil
+    Thread.abort_on_exception = @previous_abort_on_exceptions_setting
+  end
   
   # A simple way to check if a given bit of functionality is reloaded, taking into account
   # race conditions. Every 100 milliseconds, run the block. If it matches the expected value,
@@ -65,28 +87,6 @@ class TestWatcher < MiniTest::Unit::TestCase
     ensure
       watcher.stop
     end
-  end
-  
-  def setup
-    super
-    
-    # The Listen gem leaks state between tests. To get around this, we copy the example directory
-    # into a temporary location.
-    copy_example_dir
-
-    # The Listen gem runs the watcher in a thread. So any uncaught exceptions there would normally
-    # just cause the thread to exit, rather than raise an exception in the main thread. This would
-    # make the watcher seemingly inexplicably stop detecting filesystem events. The solution is to
-    # tell Thread to raise an exception in the main thread whenever any other thread raises.
-    @previous_abort_on_exceptions_setting = Thread.abort_on_exception
-    Thread.abort_on_exception = true
-  end
-  
-  def teardown
-    super
-    FileUtils.rm_rf Ichiban.project_root
-    Ichiban.project_root = nil
-    Thread.abort_on_exception = @previous_abort_on_exceptions_setting
   end
   
   def test_watched_and_changed

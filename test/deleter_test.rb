@@ -1,6 +1,6 @@
 require File.join(File.expand_path(File.dirname(__FILE__)), 'test_helper.rb')
 
-class TestDeleter < MiniTest::Unit::TestCase
+class TestDeleter < Minitest::Test
   include ExampleDirectory
   
   def setup
