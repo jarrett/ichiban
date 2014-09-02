@@ -11,7 +11,6 @@ Gem::Specification.new do |s|
   s.executables  = ['ichiban']
   s.homepage     = 'https://github.com/jarrett/ichiban'
   
-  # TODO: Pessimistic version constrains.
   s.add_runtime_dependency 'ejs', '>= 1.1.1', '~> 1'
   s.add_runtime_dependency 'erubis', '>= 2.7.0', '~> 2'
   s.add_runtime_dependency 'sass', '>= 3.3.14', '~> 3'
@@ -25,6 +24,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'minitest-reporters', '>= 1.0.5', '~> 1'
   s.add_development_dependency 'mocha', '>= 1.1.0', '~> 1'
   s.add_development_dependency 'lorax', '>= 0.2.0', '~> 0'
+  s.add_development_dependency 'rdiscount', '>= 2.1.7', '~> 2'
   
   s.post_install_message = File.read(File.join(File.dirname(__FILE__), 'post_install_message.txt'))
 end

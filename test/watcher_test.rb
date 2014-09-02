@@ -107,6 +107,7 @@ class WatcherTest < Minitest::Test
     File.open(src, 'w') do |f|
       f << '<p>This file was just created.</p>'
     end
+    mock_watcher_add src
     assert_compiled 'watched_and_created.html'
   end
   

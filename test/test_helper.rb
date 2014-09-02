@@ -29,6 +29,10 @@ module ExampleDirectory
     FileUtils.cp_r(File.expand_path(File.join(File.dirname(__FILE__), '..', 'example')), new_dir)
     Ichiban.project_root = new_dir
   end
+  
+  def init_example_dir
+    Ichiban.project_root = File.expand_path(File.join(File.dirname(__FILE__), '..', 'example'))
+  end
 end
 
 module CompilationAssertions
