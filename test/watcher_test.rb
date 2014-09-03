@@ -60,39 +60,6 @@ class WatcherTest < Minitest::Test
     @watcher
   end
   
-  # Takes a block. The watcher will be stopped after the block is executed.
-  def run_watcher
-    watcher = Ichiban::Watcher.new(:latency => 0.01)
-    watcher.start
-    begin
-      # Listen takes an unknown amount of time to boot. We need to poll the watcher,
-      # touching a file and waiting for the watcher to see the change.
-      while watcher.listen_event_log.empty?
-        assert watcher.listener.processing?, "Expected watcher to be running"
-        sleep 0.01
-        FileUtils.touch File.join(Ichiban.project_root, 'listen_tmo.txt')
-      end
-      watcher.listen_event_log.clear
-      
-      yield
-      
-      # Listen is multithreaded, so race conditions are possible. We need to poll the
-      # watcher, waiting for it to detect a change. Once it has, we can run our
-      # assertions.
-      wait_count = 0
-      while watcher.listen_event_log.empty? and wait_count <= 250
-        assert watcher.listener.processing?, "Expected watcher to be running"
-        sleep 0.01
-        wait_count += 1
-        if wait_count == 250
-          flunk 'Waited 2.5 seconds, but watcher never recorded an event.'
-        end
-      end
-    ensure
-      watcher.stop
-    end
-  end
-  
   def test_watched_and_changed
     src = File.join(Ichiban.project_root, 'html', 'watched_and_changed.html')
     File.open(src, 'w') do |f|
@@ -128,31 +95,10 @@ class WatcherTest < Minitest::Test
     skip
   end
   
-  def test_watching_layouts
-    # First, make sure the old version of the file exists.
-    Ichiban::HTMLFile.new('html/changed_layout.html').update
-    assert(
-      File.exists?(File.join(Ichiban.project_root, 'compiled/changed_layout.html')),
-      "Expected #{File.join(Ichiban.project_root, 'compiled/changed_layout.html')} to exist"
-    )
-    
-    # Now update the layout.
-    layout_path = File.join(Ichiban.project_root, 'layouts/default.html')
-    old_layout_code = File.read(layout_path)
-    File.open(layout_path, 'w') do |f|
-      f << old_layout_code.sub(/<h1>.*<\/h1>/, '<h1>The New Header</h1>')
-    end
-    mock_watcher_mod layout_path
-    
-    assert_compiled 'changed_layout.html'
-  end
-  
   def test_exception_logging
-    src = File.join(Ichiban.project_root, 'html', 'exception.html')
     assert_logged('Test exception') do
-      run_watcher do
-        FileUtils.touch src
-      end
+      src = File.join(Ichiban.project_root, 'html', 'exception.html')
+      mock_watcher_mod src
     end
   end
   

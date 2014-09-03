@@ -24,7 +24,7 @@ module Ichiban
         Ichiban::ProjectGenerator.new(
           File.expand_path(@args[0])
         ).generate
-        puts "Initialized Ichiban project in #{@args[0]}"
+        Ichiban.logger.out "Initialized Ichiban project in #{@args[0]}"
       else
         print_usage
       end

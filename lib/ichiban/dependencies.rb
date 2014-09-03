@@ -51,7 +51,6 @@ module Ichiban
     
     def self.propagate(path)
       files_depending_on(path).each do |project_file|
-        puts project_file.dest
         project_file.update
       end
     end
