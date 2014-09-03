@@ -40,16 +40,52 @@ class TestDependencies < Minitest::Test
     assert_deps expected_paths, deps_hash, "layouts/default.html"
   end
   
-  def test_files_depending_on_with_glob_complex
+  def test_files_depending_on_with_proc_returning_string
     init_example_dir
-    deps_hash = {"layouts/default.html" => "html/**/_*"}
+    deps_hash = {"layouts/default.html" => (-> {"html/_employee.html"})}
+    stub_deps(deps_hash)
+    expected_paths = ["html/_employee.html"]
+    assert_deps expected_paths, deps_hash, "layouts/default.html"
+  end
+  
+  def test_files_depending_on_with_proc_returning_array
+    init_example_dir
+    
+    deps_hash = {"layouts/default.html" =>
+      # Proc returning an array of strings.
+      -> {["html/_employee.html", "html/_partial.html"]}
+    }
     stub_deps(deps_hash)
     expected_paths = ["html/_employee.html", "html/_partial.html"]
     assert_deps expected_paths, deps_hash, "layouts/default.html"
   end
   
+  def test_files_depending_on_with_array_of_procs_and_strings
+    init_example_dir
+    deps_hash = {"layouts/nested_inner.html" => [
+      "data/**/*",
+      "helpers/my_helper.rb",
+      # Proc returning an array of strings.
+      -> {["html/_employee.html", "html/_partial.html"]}
+    ]}
+    stub_deps(deps_hash)
+    exp_paths = ["html/_employee.html", "html/_partial.html", "data/employees.json", 
+      "helpers/my_helper.rb"
+    ]
+    assert_deps exp_paths, deps_hash, "layouts/nested_inner.html"
+  end
+  
+  def test_files_depending_on_with_glob_complex
+    init_example_dir
+    deps_hash = {"layouts/default.html" => "html/**/_*"}
+    stub_deps(deps_hash)
+    exp_paths = ["html/_employee.html", "html/_partial.html"]
+    assert_deps exp_paths, deps_hash, "layouts/default.html"
+  end
+  
   def test_files_from_proc_returning_string
-    exp_paths = "html/_partial.html"
+    init_example_dir
+    exp_paths = [File.join(Ichiban.project_root, "html/_partial.html")]
     act_paths = Ichiban::Dependencies.files_from_proc(-> { "html/_partial.html" })
     assert_equal exp_paths, act_paths
   end
@@ -64,33 +100,5 @@ class TestDependencies < Minitest::Test
     assert_raises TypeError do 
       Ichiban::Dependencies.files_from_proc(-> { [2, "Hello"] })
     end
-  end
-  
-  def test_files_depending_on_proc_with_string
-    init_example_dir
-    deps_hash = {"layouts/default.html" => (-> {"html/_employee.html"})}
-    stub_deps(deps_hash)
-    expected_paths = ["html/_employee.html"]
-    assert_deps expected_paths, deps_hash, "layouts/default.html"
-  end
-  
-  def test_files_depending_on_proc_with_array
-    init_example_dir
-    deps_hash = {"layouts/default.html" => (-> {["html/_employee.html", "html/_partial.html"]})}
-    stub_deps(deps_hash)
-    expected_paths = ["html/_employee.html", "html/_partial.html"]
-    assert_deps expected_paths, deps_hash, "layouts/default.html"
-  end
-  
-  def test_files_depending_on_with_array
-    init_example_dir
-    deps_hash = {"layouts/nested_inner.html" => [(-> {["html/_employee.html", "html/_partial.html"]}), 
-      "data/**/*", "helpers/my_helper.rb"]
-    }
-    stub_deps(deps_hash)
-    exp_paths = ["html/_employee.html", "html/_partial.html", "data/employees.json", 
-      "helpers/my_helper.rb"
-    ]
-    assert_deps exp_paths, deps_hash, "layouts/nested_inner.html"
   end
 end

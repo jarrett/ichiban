@@ -32,11 +32,17 @@ module Ichiban
     
     def self.files_from_proc(proc)
       files = proc.call
+      # Validate return value is String or Array.
       if !files.is_a?(String) and !files.is_a?(Array)
         raise(TypeError, "Expected Proc to return String or Array, but was: #{files.inspect}")
       end
+      # If return value is Array, validate all members are Strings.
       if files.is_a?(Array) and !files.all? { |f| f.is_a?(String) }
         raise(TypeError, "Proc returned Array, but not all elements were Strings: #{files.inspect}")
+      end
+      # If return value is String, wrap it in an Array.
+      if files.is_a?(String)
+        files = [files]
       end
       files.map do |file|
         File.join(Ichiban.project_root,file)
