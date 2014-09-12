@@ -1,16 +1,10 @@
 require File.join(File.expand_path(File.dirname(__FILE__)), 'test_helper.rb')
 
 class TestFile < Minitest::Test
-  # Bug fix: The LayoutFile class used to try to render partial templates as individual
-  # pages, which resulted in exceptions.
-  def test_layout_update_ignores_partial_templates
-    # We don't want to set up real files for this in the example directory. It's easier
-    # just to stub everything out.
-    Ichiban::Dependencies.stubs(:graph).returns({'default' => ['_partial.html']})
-    Ichiban::HTMLFile.expects(:new).never
-    Ichiban.stubs(:project_root).returns('/dev/null')
-    File.stubs(:exists?).returns(true)
-    Ichiban::LayoutFile.new('layouts/default.html').update
+  include ExampleDirectory
+  
+  def teardown
+    Ichiban.project_root = nil
   end
   
   # Bug fix: The HTMLFile class used to include only the filename, not the folders,
@@ -30,5 +24,22 @@ class TestFile < Minitest::Test
     assert_equal '/baz/', file.web_path
     
     Ichiban.project_root = nil
+  end
+  
+  # Bug fix: from_abs used to instantiate ProjectFile subclasses when passed a directory.
+  def test_from_abs_ignores_directories
+    init_example_dir
+    assert_nil Ichiban::ProjectFile.from_abs File.join(Ichiban.project_root, 'assets/css')
+    assert_nil Ichiban::ProjectFile.from_abs File.join(Ichiban.project_root, 'assets/js')
+    assert_nil Ichiban::ProjectFile.from_abs File.join(Ichiban.project_root, 'assets/img')
+    assert_nil Ichiban::ProjectFile.from_abs File.join(Ichiban.project_root, 'assets/misc')
+    assert_nil Ichiban::ProjectFile.from_abs File.join(Ichiban.project_root, 'compiled')
+    assert_nil Ichiban::ProjectFile.from_abs File.join(Ichiban.project_root, 'data')
+    assert_nil Ichiban::ProjectFile.from_abs File.join(Ichiban.project_root, 'helpers')
+    assert_nil Ichiban::ProjectFile.from_abs File.join(Ichiban.project_root, 'html')
+    assert_nil Ichiban::ProjectFile.from_abs File.join(Ichiban.project_root, 'models')
+    assert_nil Ichiban::ProjectFile.from_abs File.join(Ichiban.project_root, 'layouts')
+    assert_nil Ichiban::ProjectFile.from_abs File.join(Ichiban.project_root, 'scripts')
+    assert_nil Ichiban::ProjectFile.from_abs File.join(Ichiban.project_root, 'webserver')
   end
 end

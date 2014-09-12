@@ -7,10 +7,12 @@ module Ichiban
     
     def print_usage
       puts(
-        "Usage: ichiban [command]\n" +
+        "\nUsage: ichiban [command]\n" +
         "Available commands: \n" +
         "  watch\n" +
-        "  new [path]"
+        "  new [path]\n" +
+        "  help\n\n" +
+        "https://github.com/jarrett/ichiban\n\n"
       )
     end
     
@@ -25,6 +27,8 @@ module Ichiban
           File.expand_path(@args[0])
         ).generate
         Ichiban.logger.out "Initialized Ichiban project in #{@args[0]}"
+      when 'version', '-v', '--version'
+        puts "Ichiban version #{::Ichiban::VERSION}"
       else
         print_usage
       end

@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name         = 'ichiban'
-  s.version      = '1.0.13'
-  s.date         = '2012-11-29'
+  s.version      = '1.1.0'
+  s.date         = '2014-08-03'
   s.summary      = 'Ichiban'
   s.description  = 'Static website compiler with advanced features, including watcher script.'
   s.authors      = ['Jarrett Colby']
@@ -17,6 +17,9 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'listen', '>= 2.7.9', '~> 2'
   s.add_runtime_dependency 'activesupport', '>= 4.1.5', '~> 4'
   s.add_runtime_dependency 'bundler', '>= 1.5.1', '~> 1'
+  s.add_runtime_dependency 'uglifier', '>= 2.5.3', '~> 2'
+  s.add_runtime_dependency 'therubyracer', '>= 0.12.1', '~> 0'
+  s.add_runtime_dependency 'source_map', '>= 3.0.1'
   
   # Will be the :development group in Bundler.
   s.add_development_dependency 'rake', '>= 10.3.2', '~> 10'

@@ -6,16 +6,22 @@ module Ichiban
   end
   
   class Config
+    def self.load_file
+      config_file = File.join(Ichiban.project_root, 'config.rb')
+      raise "#{config_file} must exist" unless File.exists?(config_file)
+      load config_file
+    end
+    
     attr_writer :dependencies
     
     def dependencies
       @dependencies || raise("Ichiban.config.dependencies not set. Set inside block in config.rb like this: cfg.dependencies = {...}")
     end
     
-    def self.load_file
-      config_file = File.join(Ichiban.project_root, 'config.rb')
-      raise "#{config_file} must exist" unless File.exists?(config_file)
-      load config_file
+    attr_writer :js_manifests
+    
+    def js_manifests
+      @js_manifests || raise("Ichiban.config.js_manifests not set. Set inside block in config.rb like this: cfg.js_manifests = {...}")
     end
     
     attr_writer :relative_url_root

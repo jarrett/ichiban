@@ -19,6 +19,9 @@ class Minitest::Test
   
   def teardown
     Ichiban.logger.out = @original_logger_out
+    Dir.glob(File.expand_path(File.join(File.dirname(__FILE__), '..', "example-*"))).each do |example_dir|
+      FileUtils.rm_rf example_dir
+    end
   end
 end
 
@@ -52,7 +55,7 @@ module CompilationAssertions
 end
 
 module LoggingAssertions
-  # Takes a block. Redirects logger output form STDOUT, so you won't see it.
+  # Takes a block. Redirects logger output from whatever it was before.
   def assert_logged(str, msg = nil)
     old_out = Ichiban.logger.out
     begin

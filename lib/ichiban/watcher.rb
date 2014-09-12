@@ -54,6 +54,7 @@ module Ichiban
           on_change modified, added, deleted
         end
         @listener.start
+        sleep
       rescue Interrupt
         stop
         exit 0

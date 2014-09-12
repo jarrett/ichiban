@@ -6,7 +6,7 @@ module Ichiban
   class ScriptRunner    
     # Takes an absolute path
     def script_file_changed(path)
-      Ichiban.logger.script_run(path, path)
+      Ichiban.logger.script_run(path)
       script = Ichiban::Script.new(path).run
     end
   end

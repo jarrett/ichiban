@@ -82,10 +82,9 @@ module Ichiban
       end
     end
     
-    def script_run(ind_path, dep_path)
-      ind_path = ind_path.slice(Ichiban.project_root.length + 1..-1)
-      dep_path = dep_path.slice(Ichiban.project_root.length + 1..-1)
-      msg = "#{dep_path} running due to change in #{ind_path}"
+    def script_run(path)
+      path = path.slice(Ichiban.project_root.length + 1..-1)
+      msg = "#{path} running"
       if ansi?
         msg = ANSI.color(msg, :magenta)
       end

@@ -30,13 +30,6 @@ class TestAssetCompiler < Minitest::Test
     assert_compiled('img/test.png')
   end
   
-  def test_js_copying
-    FileUtils.mkdir(::File.join(Ichiban.project_root, 'compiled/js'))
-    file = Ichiban::JSFile.new('assets/js/test.js')
-    Ichiban::AssetCompiler.new(file).compile
-    assert_compiled('js/test.js')
-  end
-  
   def test_misc_asset_copying
     file = Ichiban::MiscAssetFile.new('assets/misc/test.txt.gz')
     Ichiban::AssetCompiler.new(file).compile

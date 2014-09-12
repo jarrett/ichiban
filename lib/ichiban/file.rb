@@ -12,6 +12,7 @@ module Ichiban
     # Returns a new instance based on an absolute path. Will automatically pick the right subclass.
     # Return nil if the file is not recognized.
     def self.from_abs(abs)
+      return nil if File.directory?(abs)
       rel = abs.slice(Ichiban.project_root.length..-1) # Relative to project root
       rel.sub!(/^\//, '') # Remove leading slash
       handler = @types.detect do |_, proc|
@@ -44,6 +45,18 @@ module Ichiban
     end
     
     attr_reader :rel
+    
+    # Pass in a path relative to Ichiban.projet_root. Returns the path relative to the
+    # one you passed in. E.g. if the file is assets/js/example.js, then
+    # rel_to('assets/js') returns 'example.js'.
+    def rel_to(path)
+      path = path + '/' unless path.end_with?('/')
+      if rel.start_with?(path)
+        rel.sub(path, '')
+      else
+        raise "#{@abs} is not in #{path}"
+      end
+    end
     
     # Returns a new path where the old extension is replaced with new_ext
     def replace_ext(path, new_ext)
@@ -99,13 +112,9 @@ module Ichiban
     end
   end
   
-  class JSFile < ProjectFile
-    def dest_rel_to_compiled
-      File.join('js', @rel.slice('assets/js/'.length..-1))
-    end
-    
+  class JSFile < ProjectFile    
     def update
-      Ichiban::AssetCompiler.new(self).compile
+      Ichiban::JsCompiler.new(self).compile
     end
   end
   
@@ -217,10 +226,10 @@ module Ichiban
     register_type(Ichiban::SCSSFile)      { |rel| rel.start_with?('assets/css') and rel.end_with?('.scss') }
     register_type(Ichiban::ImageFile)     { |rel| rel.start_with?('assets/img') }
     register_type(Ichiban::MiscAssetFile) { |rel| rel.start_with?('assets/misc') }
-    register_type(Ichiban::ModelFile)     { |rel| rel.start_with?('models') }
+    register_type(Ichiban::ModelFile)     { |rel| rel.start_with?('models') and rel.end_with?('.rb') }
     register_type(Ichiban::DataFile)      { |rel| rel.start_with?('data') }
-    register_type(Ichiban::ScriptFile)    { |rel| rel.start_with?('scripts') }
-    register_type(Ichiban::HelperFile)    { |rel| rel.start_with?('helpers') }
+    register_type(Ichiban::ScriptFile)    { |rel| rel.start_with?('scripts') and rel.end_with?('.rb') }
+    register_type(Ichiban::HelperFile)    { |rel| rel.start_with?('helpers') and rel.end_with?('.rb') }
     register_type(Ichiban::HtaccessFile)  { |rel| rel == 'webserver/htaccess.txt' }
   end
 end

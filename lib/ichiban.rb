@@ -2,10 +2,9 @@
 require 'fileutils'
 require 'json'
 require 'erb' # Just for the helpers
+require 'stringio'
 
 # Gems
-#require 'active_support/core_ext/class/attribute'
-#require 'active_support/core_ext/object/blank'
 require 'active_support/core_ext/array/extract_options'
 require 'active_support/inflector'
 require 'sass'
@@ -14,6 +13,9 @@ require 'rake'
 require 'bundler'
 require 'listen'
 require 'ejs'
+require 'uglifier'
+require 'therubyracer'
+require 'source_map'
 
 # Ichiban files. Order matters!
 require 'ichiban/bundle'
@@ -30,11 +32,14 @@ require 'ichiban/helpers'
 require 'ichiban/nav_helper'
 require 'ichiban/html_compiler'
 require 'ichiban/asset_compiler'
+require 'ichiban/js_compiler'
 require 'ichiban/ejs_compiler'
 require 'ichiban/markdown'
 require 'ichiban/scripts'
 
 module Ichiban
+  VERSION = '1.1.0'
+  
   # In addition to setting the variable, this loads the config file
   def self.project_root=(path)
     @project_root = path
