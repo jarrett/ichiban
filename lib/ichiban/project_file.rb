@@ -114,7 +114,7 @@ module Ichiban
   
   class JSFile < ProjectFile    
     def update
-      Ichiban::JsCompiler.new(self).compile
+      Ichiban::JSCompiler.new(self).compile
     end
   end
   
