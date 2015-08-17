@@ -122,7 +122,7 @@ module Ichiban
                 li_inner_html << @ctx.content_tag('span', text, 'class' => 'selected')
               else
                 if current_path_starts_with?(path)
-                  a_attrs = {'class' => 'ancestor_of_selected'}
+                  a_attrs = {'class' => 'above-selected'}
                 else
                   a_attrs = {}
                 end
