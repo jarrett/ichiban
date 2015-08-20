@@ -20,7 +20,9 @@ module Ichiban
     # Calls Object.remove_const on all tracked modules. Also clears the compiler's list of user-defined helpers.
     def delete_all
       @loaded_constants.each do |const_name|
-        Object.send(:remove_const, const_name)
+        if Object.const_defined?(const_name)
+          Object.send(:remove_const, const_name)
+        end
       end
       Ichiban::HTMLCompiler::Context.clear_user_defined_helpers
     end

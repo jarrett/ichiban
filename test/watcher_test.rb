@@ -8,23 +8,15 @@ class WatcherTest < Minitest::Test
   def setup
     super
     
-    # The Listen gem leaks state between tests. To get around this, we copy the example directory
-    # into a temporary location.
+    # To isolate the state of each test, we operate on a copy of the example folder. This
+    # also sets Ichiban.project_root.
     copy_example_dir
-
-    # The Listen gem runs the watcher in a thread. So any uncaught exceptions there would normally
-    # just cause the thread to exit, rather than raise an exception in the main thread. This would
-    # make the watcher seemingly inexplicably stop detecting filesystem events. The solution is to
-    # tell Thread to raise an exception in the main thread whenever any other thread raises.
-    @previous_abort_on_exceptions_setting = Thread.abort_on_exception
-    Thread.abort_on_exception = true
   end
   
   def teardown
     super
     FileUtils.rm_rf Ichiban.project_root
     Ichiban.project_root = nil
-    Thread.abort_on_exception = @previous_abort_on_exceptions_setting
   end
   
   # A simple way to check if a given bit of functionality is reloaded, taking into account
@@ -43,19 +35,19 @@ class WatcherTest < Minitest::Test
   end
   
   def mock_watcher_add(path)
-    @watcher ||= Ichiban::Watcher.new
+    init_watcher
     @watcher.on_change([], [path], [])
     @watcher
   end
   
   def mock_watcher_mod(path)
-    @watcher ||= Ichiban::Watcher.new
+    init_watcher
     @watcher.on_change([path], [], [])
     @watcher
   end
   
   def mock_watcher_del(path)
-    @watcher ||= Ichiban::Watcher.new
+    init_watcher
     @watcher.on_change([], [], [path])
     @watcher
   end

@@ -102,7 +102,7 @@ module Ichiban
       require 'ansi'
       @ansi = true
     rescue LoadError
-      Ichiban.logger.out("Try `gem install ansi` for colorized output. If you're using a Gemfile, add it there too.")
+      Ichiban.logger.out("Add `gem ansi` to your Gemfile for colorized output.")
     end
   end
 end

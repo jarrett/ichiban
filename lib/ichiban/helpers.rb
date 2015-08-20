@@ -26,6 +26,8 @@ module Ichiban
       @_current_path
     end
     
+    # h is provided by ERB::Util.
+    
     def javascript_include_tag(js_file)
       js_file = js_file + '.js' unless js_file.end_with?('.js')
       path = normalize_path(File.join('/js', js_file))
@@ -79,12 +81,14 @@ module Ichiban
       path
     end
     
-    def partial(path)
+    def partial(path, options = {})
+      options = {ivars: {}}.merge(options)
       file = Ichiban::PartialHTMLFile.new(
         File.join('html', path)
       )
       compiler = Ichiban::HTMLCompiler.new(file)
-      compiler.ivars = to_hash # to_hash is inherited from Erubis::Context. It's a hash of the instance variables.
+      # to_hash is inherited from Erubis::Context. It's a hash of the instance variables.
+      compiler.ivars = to_hash.merge(options[:ivars])
       compiler.compile_to_str
     end
     

@@ -90,7 +90,7 @@ class TestNavHelper < Minitest::Test
       <ul>
         <li><a href="/one/">One</a></li>
         <li>
-          <a href="/two/" class="ancestor_of_selected">Two</a>
+          <a href="/two/" class="above-selected">Two</a>
           <ul>
             <li><a href="/two/one/">Two.One</a></li>
             <li id="two_two"><a href="/two/two/">Two.Two</a></li>

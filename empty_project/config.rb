@@ -24,4 +24,11 @@ Ichiban.config do |cfg|
   cfg.js_manifests = {
     'site.js' => ['site.js']
   }
+  
+  # Identify the SCSS files in assets/css that should be compiled into final CSS files.
+  # Often, many of your SCSS files are simply imported into other SCSS files--in
+  # other words, they don't map to their own, distinct CSS files. Make sure that
+  # cfg.dependencies covers any SCSS imports. Otherwise, saving the imported file won't
+  # update the root file.
+  cfg.scss_root_files = ['screen.scss']
 end

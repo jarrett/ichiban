@@ -1,9 +1,21 @@
 #!/usr/bin/env ruby
 
-# for dev purposes:
-$:.unshift File.expand_path(File.join(File.dirname(__FILE__), '../lib'))
+# When developing Ichiban, run this script like so:
+#   DEV=1 ~/gems/ichiban/bin/ichiban watch
+# This will prevent your project's Gemfile from being used! There's really no way to avoid
+# that, because using the Gemfile would cause the installed version of Ichiban to be used.
 
 require 'rubygems'
+if ENV['DEV'] == '1'
+  puts "\n"
+  puts '====================================================='
+  puts 'Ichiban running in dev mode. Gemfile will be ignored.'
+  puts '====================================================='
+  puts "\n"
+  $:.unshift File.expand_path(File.join(File.dirname(__FILE__), '../lib'))
+else
+  require 'bundler/setup'
+end
 require 'ichiban'
 
 Ichiban::Command.new(ARGV).run

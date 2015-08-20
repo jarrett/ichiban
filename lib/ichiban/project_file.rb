@@ -147,7 +147,9 @@ module Ichiban
     end
     
     def update
-      Ichiban::AssetCompiler.new(self).compile
+      if Ichiban.config.scss_root_files.include?(rel_to('assets/css'))
+        Ichiban::AssetCompiler.new(self).compile
+      end
     end
   end
   
@@ -220,7 +222,7 @@ module Ichiban
       !File.basename(rel).start_with?('_')
     end
     register_type(Ichiban::LayoutFile)    { |rel| rel.start_with?('layouts') and rel.end_with?('.html') }
-    register_type(Ichiban::JSFile)        { |rel| rel.start_with?('assets/js') }
+    register_type(Ichiban::JSFile)        { |rel| rel.start_with?('assets/js') and rel.end_with?('.js') }
     register_type(Ichiban::EJSFile)       { |rel| rel.start_with?('assets/ejs') and rel.end_with?('.ejs') }
     register_type(Ichiban::CSSFile)       { |rel| rel.start_with?('assets/css') and rel.end_with?('.css') }
     register_type(Ichiban::SCSSFile)      { |rel| rel.start_with?('assets/css') and rel.end_with?('.scss') }

@@ -21,7 +21,7 @@ module Ichiban
           begin
             @loader.change(file) # Tell the Loader that this file has changed
             file.update
-          rescue => exc
+          rescue Exception => exc
             Ichiban.logger.exception(exc)
           end
         end

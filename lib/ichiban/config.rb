@@ -29,5 +29,11 @@ module Ichiban
     def relative_url_root
       @relative_url_root || raise("Ichiban.config.relative_url_root not set. Set inside block in config.rb like this: cfg.relative_url_root = '/'")
     end
+    
+    attr_writer :scss_root_files
+    
+    def scss_root_files
+      @scss_root_files || raise("Ichiban.config.scss_root_files not set. Set inside block in config.rb like this: cfg.scss_root_files = ['screen.scss']")
+    end
   end
 end
