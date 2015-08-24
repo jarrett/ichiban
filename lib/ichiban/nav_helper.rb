@@ -28,15 +28,7 @@ module Ichiban
       def current_path_starts_with?(path)
         @ctx.path_with_slashes(@ctx.current_path).start_with?(@ctx.path_with_slashes(path))
       end
-      
-      
-      
-      #def merge_classes(current_classes, added_classes)
-      #  current_classes = current_classes.split(/ +/)
-      #  added_classes = added_classes.split(/ +/)
-      #  (current_classes + added_classes).uniq.join(' ')
-      #end
-      
+            
       # Recursive. Checks whether any item in the menu, or any item in any of its descendant
       # menus, has a path that *starts with* the current path. E.g. if a menu or its descendants
       # have a link to '/a/b/c/', and we're at '/a/b/c/d/e/f/', then this method returns true.
@@ -54,21 +46,6 @@ module Ichiban
           end
         end.nil?
       end
-      
-      # Recursive
-      #def sub_menu_contains_current_path?(items)
-      #  !items.detect do |item|
-      #    if current_path?(item[1])
-      #      true
-      #    elsif item[2].is_a?(Array)
-      #      sub_menu_contains_current_path?(item[2])
-      #    elsif item[3].is_a?(Array)
-      #      sub_menu_contains_current_path?(item[3])
-      #    else
-      #      false
-      #    end
-      #  end.nil?
-      #end
       
       # Recursive
       def ul(items, depth)
@@ -152,20 +129,6 @@ module Ichiban
               li_inner_html
             end
             
-            #lis << @ctx.content_tag('li', li_attrs) do
-            #  in_sub_path = (path != '/' and @options[:consider_sub_paths] and @ctx.path_with_slashes(@ctx.current_path).start_with?(@ctx.path_with_slashes(path)))
-            #  if current_path?(path)
-            #    li_inner_html = @ctx.content_tag('span', text, 'class' => 'selected')
-            #  elsif (sub_menu and sub_menu_contains_current_path?(sub_menu)) or in_sub_path
-            #    li_inner_html = @ctx.link_to(text, path, 'class' => 'ancestor_of_selected')
-            #  else
-            #    li_inner_html = @ctx.link_to(text, path)
-            #  end
-            #  if sub_menu and (current_path?(path) or sub_menu_contains_current_path?(sub_menu) or in_sub_path)
-            #    li_inner_html << ul(sub_menu, depth + 1)
-            #  end
-            #  li_inner_html
-            #end
             lis
           end
         end
