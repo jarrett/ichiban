@@ -8,8 +8,8 @@ redcarpet
 maruku
 rdiscount
 
-Ichiban uses Guard (http://github.com/guard/guard).
-When you run `ichiban watch`, Guard may prompt
+Ichiban uses Listen (https://github.com/guard/listen).
+When you run `ichiban watch`, Listen may prompt
 you to install an event listener specific to your
 operating system. Follow its advice.
 
