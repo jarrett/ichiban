@@ -1,6 +1,6 @@
 module Ichiban
   class Loader
-    # Pass in an IchibanFile
+    # Pass in an Ichiban::ProjectFile.
     def change(file)
       if file.is_a?(Ichiban::HelperFile) or file.is_a?(Ichiban::ModelFile)
         delete_all
