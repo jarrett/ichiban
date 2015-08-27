@@ -1,8 +1,9 @@
 module Ichiban
   class Command
-    def initialize(args)
+    def initialize(args, dev = false)
       @task = args.shift
       @args = args
+      @dev = dev
     end
     
     def print_usage
@@ -10,6 +11,7 @@ module Ichiban
         "\nUsage: ichiban [command]\n" +
         "Available commands: \n" +
         "  watch\n" +
+        "  compile [-a] [path]\n" +
         "  new [path]\n" +
         "  help\n\n" +
         "https://github.com/jarrett/ichiban\n\n"
@@ -20,8 +22,15 @@ module Ichiban
       case @task
       when 'watch'
         Ichiban.project_root = Dir.getwd
-        Ichiban.load_bundle
         Ichiban::Watcher.new.start
+      when 'compile'
+        Ichiban.project_root = Dir.getwd
+        compiler = Ichiban::ManualCompiler.new
+        if @args.first == '-a'
+          compiler.all
+        else
+          compiler.paths @args
+        end
       when 'new'
         Ichiban::ProjectGenerator.new(
           File.expand_path(@args[0])

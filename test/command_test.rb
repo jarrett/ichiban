@@ -18,4 +18,22 @@ class TestCommand < Minitest::Test
     mock_watcher.expects(:start).with
     Ichiban::Command.new(['watch']).run
   end
+  
+  def test_compile_command_with_specific_paths
+    cwd = Dir.getwd
+    Ichiban.expects('project_root='.to_sym).with(cwd)
+    mock_compiler = mock('manual compiler')
+    Ichiban::ManualCompiler.expects(:new).with.returns(mock_compiler)
+    mock_compiler.expects(:paths).with(['html/apples.html', 'html/bananas.html'])
+    Ichiban::Command.new(['compile', 'html/apples.html', 'html/bananas.html']).run
+  end
+  
+  def test_compile_command_with_all
+    cwd = Dir.getwd
+    Ichiban.expects('project_root='.to_sym).with(cwd)
+    mock_compiler = mock('manual compiler')
+    Ichiban::ManualCompiler.expects(:new).with.returns(mock_compiler)
+    mock_compiler.expects(:all).with
+    Ichiban::Command.new(['compile', '-a']).run
+  end
 end

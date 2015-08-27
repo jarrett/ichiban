@@ -2,6 +2,9 @@ module Ichiban
   module NavHelper
   
     def nav(items, options = {})
+      unless items.is_a?(Array)
+        raise "Expected first parameter of NavHelper#nav to be an Array, but got: #{items.inspect}"
+      end
       Nav.new(items, options, self).to_html
     end
     
@@ -42,7 +45,7 @@ module Ichiban
             # If an item has a sub-menu, then that menu must be the third element of the array.
             # (The format is [text, path, sub_menu, li_options].) So we recursively search the
             # descendant menu(s) of this item.
-            menu_matches_current_path?(items[2])
+            menu_matches_current_path?(item[2])
           end
         end.nil?
       end
