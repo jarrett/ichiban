@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name         = 'ichiban'
-  s.version      = '1.1.0'
-  s.date         = '2014-08-03'
+  s.version      = '1.2.0'
+  s.date         = '2015-08-27'
   s.summary      = 'Ichiban'
   s.description  = 'Static website compiler with advanced features, including watcher script.'
   s.authors      = ['Jarrett Colby']
