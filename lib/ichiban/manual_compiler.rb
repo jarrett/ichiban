@@ -10,6 +10,7 @@ module Ichiban
     end
     
     def paths(paths_to_compile)
+      Ichiban::Loader.new
       paths_to_compile.each do |path|
         unless path.start_with? Ichiban.project_root
           path = File.join(Ichiban.project_root, path)

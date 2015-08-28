@@ -12,9 +12,12 @@ class ManualCompilerTest < MiniTest::Test
   
   def test_compile_paths
     copy_example_dir
-    Ichiban::ManualCompiler.new.paths ['html/html_page.html', 'html/markdown_page.md']
+    Ichiban::ManualCompiler.new.paths([
+      'html/html_page.html', 'html/markdown_page.md', 'html/uses_helper.html'
+    ])
     assert_compiled 'html_page.html'
     assert_compiled 'markdown_page.html'
+    assert_compiled 'uses_helper.html'
   end
   
   def test_compile_all
