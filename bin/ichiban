@@ -5,17 +5,19 @@
 # This will prevent your project's Gemfile from being used! There's really no way to avoid
 # that, because using the Gemfile would cause the installed version of Ichiban to be used.
 
-require 'rubygems'
 if ENV['DEV'] == '1'
   puts "\n"
-  puts '====================================================='
-  puts 'Ichiban running in dev mode. Gemfile will be ignored.'
-  puts '====================================================='
+  puts '============================================================================'
+  puts 'Ichiban running in dev mode. Ichiban version in Gemfile will be overwritten.'
+  puts '============================================================================'
   puts "\n"
-  $:.unshift File.expand_path(File.join(File.dirname(__FILE__), '../lib'))
-else
-  require 'bundler/setup'
+  
+  $:.unshift File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib'))
+  require 'ichiban'
 end
-require 'ichiban'
+
+require 'bundler/setup'
+Bundler.require
+
 
 Ichiban::Command.new(ARGV).run
