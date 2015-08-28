@@ -1,3 +1,8 @@
+if RUBY_VERSION.match(/[0-9]+-[0-9]+-[0-9]+/) and Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2.1.0')
+  puts 'Ichiban requires '
+  exit 1
+end
+
 # Standard lib
 require 'fileutils'
 require 'json'
@@ -38,8 +43,6 @@ require 'ichiban/markdown'
 require 'ichiban/scripts'
 
 module Ichiban
-  VERSION = '1.1.0'
-  
   # In addition to setting the variable, this loads the config file
   def self.project_root=(path)
     @project_root = path
