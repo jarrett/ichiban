@@ -15,7 +15,8 @@ module Ichiban
     # Automatically appends .html to dest_path
     def generate(template_path, dest_path, ivars)
       dest_path += '.html'
-      web_path = '/' + File.basename(dest_path, File.extname(dest_path)) + '/'
+      ext_to_remove = File.extname(dest_path)
+      web_path = '/' + dest_path.sub(/#{ext_to_remove}$/, '') + '/'
       compiler = Ichiban::HTMLCompiler.new(
         Ichiban::HTMLFile.new(
           File.join('html', template_path)

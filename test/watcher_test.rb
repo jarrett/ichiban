@@ -116,9 +116,9 @@ class WatcherTest < Minitest::Test
   end
   
   def test_watching_js
-    src = File.join(Ichiban.project_root, 'assets/js/test.js')
+    src = File.join(Ichiban.project_root, 'assets/js/test-source.js')
     mock_watcher_mod src
-    assert_compiled 'js/test.js'
+    assert_compiled 'js/test-compiled.js'
   end
   
   def test_watching_ejs

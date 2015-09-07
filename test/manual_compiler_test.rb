@@ -44,7 +44,7 @@ class ManualCompilerTest < MiniTest::Test
       
       # JS.
       'js/site.js',
-      'js/test.js',
+      'js/test-compiled.js',
       
       # Images.
       'img/test.png',

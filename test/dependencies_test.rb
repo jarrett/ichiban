@@ -31,12 +31,21 @@ class TestDependencies < Minitest::Test
     init_example_dir
     deps_hash = {"layouts/default.html" => "html/**/*"}
     stub_deps(deps_hash)
-    expected_paths = ["html/_employee.html", "html/_partial.html", 
-      "html/changed_layout.html", "html/exception.html", "html/includes_partial.html",
-      "html/markdown_page_2.markdown", "html/markdown_page.md", 
-      "html/nested_layouts.html", "html/subfolder/page_in_subfolder.html",
-      "html/watched_and_changed.html", "html/html_page.html"
+    expected_paths = [
+      "html/_employee.html",
+      "html/_partial.html",
+      "html/changed_layout.html",
+      "html/exception.html",
+      "html/html_page.html",
+      "html/includes_partial.html",
+      "html/markdown_page.md",
+      "html/markdown_page_2.markdown",
+      "html/nested_layouts.html",
+      "html/subfolder/page_in_subfolder.html",
+      "html/uses_helper.html",
+      "html/watched_and_changed.html"
     ]
+    
     assert_deps expected_paths, deps_hash, "layouts/default.html"
   end
   

@@ -25,7 +25,7 @@ Ichiban.config do |cfg|
   # assets/js/home.js and assets/js/popups.js.
   cfg.js_manifests = {
     'site.js' => ['home.js', 'popups.js'],
-    'test.js' => ['test.js']
+    'test-compiled.js' => ['test-source.js']
   }
   
   # Identify the SCSS files in assets/css that should be compiled into final CSS files.
