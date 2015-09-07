@@ -49,7 +49,7 @@ module Ichiban
           # If an item has a sub-menu, then that menu must be the third element of the array.
           # (The format is [text, path, sub_menu, li_options].) So we recursively search the
           # descendant menu(s) of this item.
-          (item[2].is_a?(Array) and menu_matches_current_path?(item[1], item[2], sub_menu, options))
+          (item[2].is_a?(Array) and menu_matches_current_path?(item[1], item[2], options))
         end.nil?
       end
       
