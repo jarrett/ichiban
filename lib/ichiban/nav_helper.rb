@@ -5,6 +5,7 @@ module Ichiban
       unless items.is_a?(Array)
         raise "Expected first parameter of NavHelper#nav to be an Array, but got: #{items.inspect}"
       end
+      options = {sub_paths: :expand}.merge(options)
       Nav.new(items, options, self).to_html
     end
     
@@ -16,7 +17,7 @@ module Ichiban
       end
       
       def to_html
-        ul(@items, 0)
+        ul(@items, 0, @options)
       end
       
       private
@@ -32,26 +33,28 @@ module Ichiban
         @ctx.path_with_slashes(@ctx.current_path).start_with?(@ctx.path_with_slashes(path))
       end
             
-      # Recursive. Checks whether any item in the menu, or any item in any of its descendant
-      # menus, has a path that *starts with* the current path. E.g. if a menu or its descendants
-      # have a link to '/a/b/c/', and we're at '/a/b/c/d/e/f/', then this method returns true.
-      def menu_matches_current_path?(items)
-        !items.detect do |item|
-          if current_path_starts_with?(item[1])
-            # The current path matches this item, so we can stop looking.
-            # menu_matches_current_path? will return true.
-            true
-          elsif item[2].is_a?(Array)
-            # If an item has a sub-menu, then that menu must be the third element of the array.
-            # (The format is [text, path, sub_menu, li_options].) So we recursively search the
-            # descendant menu(s) of this item.
-            menu_matches_current_path?(item[2])
-          end
+      # Recursive.
+      def menu_matches_current_path?(path, sub_menu, options)        
+        # If the menu item matches the current path exactly, return true.
+        current_path?(path) or
+        
+        # If we're allowed to consider sub-paths, and the current path starts with the
+        # menu item's path, return true. E.g. current path /a/b/c/ and menu item path
+        # /a/b/.
+        (options[:sub_paths] != :collapse and current_path_starts_with?(path)) or
+        
+        # The path for this menu item did not match. So search recursively for a matching
+        # path in this item's sub-menu.
+        !sub_menu.detect do |item|        
+          # If an item has a sub-menu, then that menu must be the third element of the array.
+          # (The format is [text, path, sub_menu, li_options].) So we recursively search the
+          # descendant menu(s) of this item.
+          (item[2].is_a?(Array) and menu_matches_current_path?(item[2], sub_menu, options))
         end.nil?
       end
       
       # Recursive
-      def ul(items, depth)
+      def ul(items, depth, options)
         # If we're in the outermost menu, add any passed-in <ul> attributes
         ul_options = (
           depth == 0 ?
@@ -97,36 +100,27 @@ module Ichiban
             lis << @ctx.content_tag('li', li_attrs) do
               li_inner_html = ''
               
+              sub_menu_open = (
+                !sub_menu.nil? and
+                menu_matches_current_path?(path, sub_menu, options)
+              )
+              
               # Create the <a> or <span> tag for this item.
               if current_path?(path)
                 li_inner_html << @ctx.content_tag('span', text, 'class' => 'selected')
               else
-                if current_path_starts_with?(path)
+                if sub_menu_open
                   a_attrs = {'class' => 'above-selected'}
                 else
                   a_attrs = {}
                 end
                 li_inner_html << @ctx.link_to(text, path, a_attrs)
               end
-            
-              # This item's sub-menu should be open if and only if:
-              #
-              # 1. we are at or inside the item's path; or
-              # 2. we are at or inside a path included in any of this item's descendant menus.
-              
-              if sub_menu
-                sub_menu_open = (
-                  current_path_starts_with?(path) or
-                  menu_matches_current_path?(sub_menu)
-                )
-              else
-                sub_menu_open = false
-              end
               
               # If the sub-menu is open, then we recursively generate its HTML
               # and append it to this <li>.
               if sub_menu_open
-                li_inner_html << ul(sub_menu, depth + 1)
+                li_inner_html << ul(sub_menu, depth + 1, options)
               end
               
               li_inner_html

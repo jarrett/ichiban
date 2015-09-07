@@ -135,4 +135,53 @@ class TestNavHelper < Minitest::Test
       html
     )
   end
+  
+  def test_sub_menu_open_when_current_path_starts_with_item_path
+    # When current path is /a/b/c, menu contains item /a/b, and :sub_paths => :collapse is
+    # not given, the /a/b sub-menu should be open.
+    html = in_context('/one/one/one') do
+      nav([
+        ['One', '/one', [
+          ['One.One', '/one/one'],
+          ['One.Two', '/one/two']
+        ]],
+        ['Two', '/two']
+      ])
+    end
+    assert_html('
+      <ul>
+        <li>
+          <a class="above-selected" href="/one/">One</a>
+          <ul>
+            <li><a href="/one/one/">One.One</a></li>
+            <li><a href="/one/two/">One.Two</a></li>
+          </ul>
+        </li>
+        <li><a href="/two/">Two</a></li>
+      </ul>',
+      html
+    )
+  end
+  
+  def test_sub_paths_collapse_option
+    # When current path is /a/b/c, menu contains item /a/b, and :sub_paths => :collapse is
+    # given, the /a/b sub-menu should be closed.
+    html = in_context('/one/one/one') do
+      nav([
+        ['One', '/one', [
+          ['One.One', '/one/one'],
+          ['One.Two', '/one/two']
+        ]],
+        ['Two', '/two']
+      ], sub_paths: :collapse)
+    end
+    assert_html('
+      <ul>
+        <li><a href="/one/">One</a></li>
+        <li><a href="/two/">Two</a></li>
+      </ul>',
+      html
+    )
+  end
+
 end
