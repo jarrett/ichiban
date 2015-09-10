@@ -103,6 +103,30 @@ class TestNavHelper < Minitest::Test
     )
   end
   
+  def test_sub_menu_open_when_on_inner_page_non_matching_path
+    # An inner page whose path is not a sub-path of the outer page.
+    html = in_context('/two') do
+      nav([
+        ['One', '/one', [
+          ['Two', '/two'],
+          ['Three', '/three']
+        ]]
+      ])
+    end
+    assert_html('
+      <ul>
+        <li>
+          <a href="/one/" class="above-selected">One</a>
+          <ul>
+            <li><span class="selected">Two</span></li>
+            <li><a href="/three/">Three</a></li>
+          </ul>
+        </li>
+      </ul>',
+      html
+    )
+  end
+  
   def test_sub_menu_open_when_on_outermost_page
     html = in_context('/two/') do
       nav([

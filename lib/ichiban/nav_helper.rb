@@ -45,11 +45,8 @@ module Ichiban
         
         # The path for this menu item did not match. So search recursively for a matching
         # path in this item's sub-menu.
-        !sub_menu.detect do |item|        
-          # If an item has a sub-menu, then that menu must be the third element of the array.
-          # (The format is [text, path, sub_menu, li_options].) So we recursively search the
-          # descendant menu(s) of this item.
-          (item[2].is_a?(Array) and menu_matches_current_path?(item[1], item[2], options))
+        !sub_menu.detect do |_, sub_path, sub_sub_menu|
+          menu_matches_current_path? sub_path, sub_sub_menu, options
         end.nil?
       end
       
@@ -67,7 +64,13 @@ module Ichiban
         @ctx.content_tag('ul', ul_options) do
           items.inject('') do |lis, item|
             text = item.shift
+            unless text.is_a?(String)
+              raise "Invalid data structure passed to nav. Expected String, but got #{text.inspect}"
+            end
             path = item.shift
+            unless path.is_a?(String)
+              raise "Invalid data structure passed to nav. Expected String, but got #{path.inspect}"
+            end
             
             # After the text and path, there are two optional parameters: Sub-menu (an array)
             # and <li> options (a hash). If both exist, they must come in that order. But either
@@ -85,11 +88,20 @@ module Ichiban
             case third
             when Array
               sub_menu = third
-              if fourth.is_a?(Hash)
+              case fourth
+              when Hash
                 li_attrs = fourth
+              when nil
+                # Do nothing.
+              else
+                raise "Invalid data structure passed to nav. Expected Hash or nil, but got #{fourth.inspect}"
               end
             when Hash
               li_attrs.merge!(third)
+            when nil
+              # Do nothing.
+            else
+              raise "Invalid data structure passed to nav. Expected Array, Hash, or nil, but got #{third.inspect}"
             end
             
             # If the path has a leading slash, consider it absolute and prepend it with
