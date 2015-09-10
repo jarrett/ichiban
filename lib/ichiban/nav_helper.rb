@@ -45,9 +45,9 @@ module Ichiban
         
         # The path for this menu item did not match. So search recursively for a matching
         # path in this item's sub-menu.
-        !sub_menu.detect do |_, sub_path, sub_sub_menu|
+        (!sub_menu.nil? and sub_menu.any? do |_, sub_path, sub_sub_menu|
           menu_matches_current_path? sub_path, sub_sub_menu, options
-        end.nil?
+        end)
       end
       
       # Recursive
