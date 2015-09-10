@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ichiban (1.2.7)
+    ichiban (1.2.8)
       activesupport (~> 4, >= 4.1.5)
       bundler (~> 1, >= 1.5.1)
       ejs (~> 1, >= 1.1.1)
