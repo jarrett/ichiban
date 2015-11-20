@@ -36,6 +36,12 @@ class TestAssetCompiler < Minitest::Test
     assert_compiled('test.txt.gz')
   end
   
+  def test_misplaced_asset_copying
+    file = Ichiban::MisplacedAssetFile.new('html/subfolder/misplaced.txt')
+    Ichiban::AssetCompiler.new(file).compile
+    assert_compiled('subfolder/misplaced.txt')
+  end
+  
   def test_htaccess_copying
     file = Ichiban::HtaccessFile.new('webserver/htaccess.txt')
     Ichiban::AssetCompiler.new(file).compile

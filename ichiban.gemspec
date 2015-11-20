@@ -3,7 +3,7 @@ require File.expand_path(File.join(File.dirname(__FILE__), 'lib', 'ichiban', 've
 Gem::Specification.new do |s|
   s.name         = 'ichiban'
   s.version      = Ichiban::VERSION
-  s.date         = '2015-09-07'
+  s.date         = '2015-11-20'
   s.summary      = 'Ichiban'
   s.description  = 'Static website compiler with advanced features, including watcher script.'
   s.authors      = ['Jarrett Colby']

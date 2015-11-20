@@ -133,6 +133,12 @@ class WatcherTest < Minitest::Test
     assert_compiled 'test.txt.gz'
   end
   
+  def test_watching_misplaced_assets
+    src = File.join(Ichiban.project_root, 'html/subfolder/misplaced.txt')
+    mock_watcher_mod src
+    assert_compiled 'subfolder/misplaced.txt'
+  end
+  
   def test_watching_htaccess
     FileUtils.rm File.join(Ichiban.project_root, 'compiled/.htaccess')
     src = File.join(Ichiban.project_root, 'webserver/htaccess.txt')

@@ -33,8 +33,11 @@ class ManualCompilerTest < MiniTest::Test
       'markdown_page_2.html',
       'nested_layouts.html',
       'subfolder/page_in_subfolder.html',
-      'test.txt.gz',
       'thomas-jefferson.html',
+      
+      # Misc. assets.
+      'subfolder/misplaced.txt',
+      'test.txt.gz',
       
       # CSS.
       'css/screen.css',

@@ -41,6 +41,7 @@ class TestDependencies < Minitest::Test
       "html/markdown_page.md",
       "html/markdown_page_2.markdown",
       "html/nested_layouts.html",
+      "html/subfolder/misplaced.txt",
       "html/subfolder/page_in_subfolder.html",
       "html/uses_helper.html",
       "html/watched_and_changed.html"

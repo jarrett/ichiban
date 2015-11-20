@@ -1,0 +1,3 @@
+This file should have been placed in assets/misc. But it's been misplaced in the HTML
+folder. While this is bad organization, it's still supported. This file will be copied
+into compiled/subfolder/misplaced.txt.

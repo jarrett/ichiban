@@ -165,7 +165,17 @@ module Ichiban
   
   class MiscAssetFile < ProjectFile
     def dest_rel_to_compiled
-      @rel.slice('assets/misc/'.length..-1)
+      @rel.slice(@rel.slice('assets/misc/'.length..-1))
+    end
+    
+    def update
+      Ichiban::AssetCompiler.new(self).compile
+    end
+  end
+  
+  class MisplacedAssetFile < ProjectFile
+    def dest_rel_to_compiled
+      @rel.slice('html/'.length..-1)
     end
     
     def update
@@ -219,6 +229,11 @@ module Ichiban
     register_type(Ichiban::HTMLFile) do |rel|
       rel.start_with?('html') and
       (rel.end_with?('.html') or rel.end_with?('.md') or rel.end_with?('.markdown')) and
+      !File.basename(rel).start_with?('_')
+    end
+    register_type(Ichiban::MisplacedAssetFile) do |rel|
+      rel.start_with?('html') and
+      !(rel.end_with?('.html') or rel.end_with?('.md') or rel.end_with?('.markdown')) and
       !File.basename(rel).start_with?('_')
     end
     register_type(Ichiban::LayoutFile)    { |rel| rel.start_with?('layouts') and rel.end_with?('.html') }
