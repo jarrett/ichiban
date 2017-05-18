@@ -10,7 +10,7 @@ module Ichiban
       else
         dest = nil
       end
-      if dest and File.exists?(dest)
+      if dest and File.exist?(dest)
         FileUtils.rm(dest)
       end
     

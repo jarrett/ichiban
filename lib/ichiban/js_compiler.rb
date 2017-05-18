@@ -10,7 +10,7 @@ module Ichiban
             Ichiban.project_root, 'compiled', 'js',
             File.dirname(dest)
           ))
-          unless File.exists? dest_folder
+          unless File.exist? dest_folder
             FileUtils.mkdir_p dest_folder
           end
           
@@ -54,7 +54,7 @@ module Ichiban
               Ichiban.project_root, 'compiled', 'js',
               File.dirname(filename)
             ))
-            unless File.exists? folder
+            unless File.exist? folder
               FileUtils.mkdir_p folder
             end
             FileUtils.cp(

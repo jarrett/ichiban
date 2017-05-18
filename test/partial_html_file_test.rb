@@ -33,6 +33,6 @@ class TestPartialHTMLFile < Minitest::Test
     file = Ichiban::ProjectFile.from_abs(partial_path)
     file.update
     bad_dest = File.join(Ichiban.project_root, 'compiled', '_partial.html')
-    assert !File.exists?(bad_dest), "Expected #{bad_dest} not to exist"
+    assert !File.exist?(bad_dest), "Expected #{bad_dest} not to exist"
   end
 end

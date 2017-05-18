@@ -6,7 +6,7 @@ class TestProjectGenerator < Minitest::Test
   end
   
   def teardown
-    if File.exists?(project_dest)
+    if File.exist?(project_dest)
       FileUtils.rm_rf project_dest
     end
   end
@@ -33,7 +33,7 @@ class TestProjectGenerator < Minitest::Test
       compiled/.htaccess
     ).each do |dest_file|
       abs = File.join(project_dest, dest_file)
-      assert File.exists?(abs), "Expected #{abs} to exist"
+      assert File.exist?(abs), "Expected #{abs} to exist"
     end
   end
 end

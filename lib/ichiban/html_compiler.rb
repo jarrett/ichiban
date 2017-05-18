@@ -22,7 +22,7 @@ module Ichiban
       if @html_file.is_a?(Ichiban::HTMLFile)
         ivars_for_ctx[:_current_path] = @html_file.web_path
       end
-      ivars_for_ctx.merge!(@ivars) if @ivars
+      ivars_for_ctx.merge!(@ivars) if instance_variable_defined?('@ivars')
       
       ctx = Ichiban::HTMLCompiler::Context.new(ivars_for_ctx)
       
@@ -52,7 +52,7 @@ module Ichiban
     def wrap_in_layouts(ctx, inner_rhtml)
       ctx.layout_stack.reverse.inject(inner_rhtml) do |html, layout_name|
         layout_path = File.join(Ichiban.project_root, 'layouts', layout_name + '.html')
-        unless File.exists?(layout_path)
+        unless File.exist?(layout_path)
           raise "Layout does not exist: #{layout_path}"
         end
         eruby = Eruby.new(
@@ -100,7 +100,7 @@ module Ichiban
       end
       
       def layout_stack
-        @_layout_stack or ['default']
+        instance_variable_defined?('@_layout_stack') ? @_layout_stack : ['default']
       end
       
       def self.user_defined_helpers

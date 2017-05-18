@@ -8,7 +8,7 @@ module Ichiban
   class Config
     def self.load_file
       config_file = File.join(Ichiban.project_root, 'config.rb')
-      raise "#{config_file} must exist" unless File.exists?(config_file)
+      raise "#{config_file} must exist" unless File.exist?(config_file)
       load config_file
     end
     

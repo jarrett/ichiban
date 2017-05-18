@@ -23,7 +23,7 @@ module Ichiban
           raise(TypeError, "Expected String, Array, or Proc, but was: #{files.inspect}")
         end
         paths.map do |path|
-          project_file = Ichiban::ProjectFile.from_abs(path)
+          Ichiban::ProjectFile.from_abs(path)
         end.compact
       else
         []

@@ -78,9 +78,9 @@ class WatcherTest < Minitest::Test
         f << '<p>This file should be deleted momentarily.</p>'
       end
     end    
-    assert File.exists?(dst)
+    assert File.exist?(dst)
     mock_watcher_del src
-    assert !File.exists?(dst)
+    assert !File.exist?(dst)
   end
   
   def test_watched_and_deleted_folder

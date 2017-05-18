@@ -55,8 +55,8 @@ module CompilationAssertions
   def assert_compiled(rel_path, msg = nil)
     compiled_path = File.join(Ichiban.project_root, 'compiled', rel_path)
     expected_path = File.join(Ichiban.project_root, 'expected', rel_path)
-    assert File.exists?(expected_path), "Missing: #{expected_path}"
-    assert File.exists?(compiled_path), msg || "Expected #{compiled_path} to exist"
+    assert File.exist?(expected_path), "Missing: #{expected_path}"
+    assert File.exist?(compiled_path), msg || "Expected #{compiled_path} to exist"
     actual_data = File.read(compiled_path)
     expected_data = File.read(expected_path)
     if block_given?

@@ -30,6 +30,7 @@ $RECYCLE.BIN/
 #********** Linux template********** 
 
 !.gitignore
+!.travis.yml
 *~
 
 # KDE

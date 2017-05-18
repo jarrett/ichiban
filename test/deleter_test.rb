@@ -30,7 +30,7 @@ class TestDeleter < Minitest::Test
     
     Ichiban::Deleter.new.delete_dest(src)
     
-    assert !File.exists?(src), "Expected #{src} to be deleted"
-    assert !File.exists?(dst), "Expected #{dst} to be deleted"
+    assert !File.exist?(src), "Expected #{src} to be deleted"
+    assert !File.exist?(dst), "Expected #{dst} to be deleted"
   end
 end
