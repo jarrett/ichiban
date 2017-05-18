@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'erubis', '>= 2.7.0', '~> 2'
   s.add_runtime_dependency 'sass', '>= 3.3.14', '~> 3'
   s.add_runtime_dependency 'listen', '>= 3.1.5', '~> 3'
-  s.add_runtime_dependency 'activesupport', '>= 5.1.1', '~> 5'
+  s.add_runtime_dependency 'activesupport', '>= 4.2.8'
   s.add_runtime_dependency 'bundler', '>= 1.13.6', '~> 1'
   s.add_runtime_dependency 'uglifier', '>= 3.2.0', '~> 3'
   s.add_runtime_dependency 'therubyracer', '>= 0.12.2', '~> 0'
