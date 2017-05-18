@@ -1,5 +1,6 @@
 module Ichiban
-  # This class uses the UglifyJS2 binary to concatenate and minify JS source files.
+  # This class uses the UglifyJS2 binary (uglifyjs) to concatenate and minify JS source
+  # files. You must have uglify-js on your path.
   class JSCompiler
     def compile
       rel = @file.rel_to 'assets/js'
