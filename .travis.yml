@@ -13,5 +13,5 @@ matrix:
   exclude:
     - rvm: 2.1.10
       gemfile: gemfiles/ruby-current.gemfile
-before_install: npm install --global uglify-js && which uglify-js
+before_install: npm install --global uglify-js && which uglifyjs
 script: bundle exec rake test
