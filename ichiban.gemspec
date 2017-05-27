@@ -13,6 +13,8 @@ Gem::Specification.new do |s|
   s.executables  = ['ichiban']
   s.homepage     = 'https://github.com/jarrett/ichiban'
   
+  s.required_ruby_version = '>= 2.2.3'
+  
   s.add_runtime_dependency 'ejs', '>= 1.1.1', '~> 1'
   s.add_runtime_dependency 'erubis', '>= 2.7.0', '~> 2'
   s.add_runtime_dependency 'sass', '>= 3.3.14', '~> 3'
