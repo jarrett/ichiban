@@ -1,3 +1,5 @@
 function popup() {
-  alert('Not really a popup. Just an alert.');
+  document.
+    getElementsByTagName('body')[0].
+    innerHTML = 'This is the popup.';
 }

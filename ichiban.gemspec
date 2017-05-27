@@ -20,8 +20,8 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'activesupport', '>= 4.2.8'
   s.add_runtime_dependency 'bundler', '>= 1.13.6', '~> 1'
   s.add_runtime_dependency 'uglifier', '>= 3.2.0', '~> 3'
+  s.add_runtime_dependency 'sourcemap', '>= 0.1.1', '~> 0'
   s.add_runtime_dependency 'therubyracer', '>= 0.12.2', '~> 0'
-  s.add_runtime_dependency 'source_map', '>= 3.0.1', '~> 3'
   
   # Will be the :development group in Bundler.
   s.add_development_dependency 'rake', '>= 12.0.0', '~> 12'

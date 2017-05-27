@@ -1,6 +1,1 @@
-{"version":3,
- "file":"site.js",
- "sources":["home.js", "popups.js"],
- "names":["alert", "popup"],
- "mappings":"CAAA,WACE,GAAI,EAAI,GAAK,EAAG,CACdA,MAAM,8BCFV,SAASC,SACPD,MAAM",
- "sourceRoot":"/js"}
+{"version":3,"file":null,"mappings":"CAAA,WAEIA,MAAM;;ACFV,QAASC,SACPC,SACEC,qBAAqB,QAAQ,GAC7BC,UAAY","sources":["home.js","popups.js"],"names":["alert","popup","document","getElementsByTagName","innerHTML"]}

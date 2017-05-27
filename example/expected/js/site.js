@@ -1,2 +1,2 @@
-(function(){if(2+2==4){alert("This is the home page.")}})();function popup(){alert("Not really a popup. Just an alert.")}
+!function(){alert("This is the home page.")}();function popup(){document.getElementsByTagName("body")[0].innerHTML="This is the popup."}
 //# sourceMappingURL=/js/site.js.map

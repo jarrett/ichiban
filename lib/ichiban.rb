@@ -19,8 +19,8 @@ require 'bundler'
 require 'listen'
 require 'ejs'
 require 'uglifier'
+require 'sourcemap'
 require 'therubyracer'
-require 'source_map'
 
 # Ichiban files. Order matters!
 require 'ichiban/config'
